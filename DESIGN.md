@@ -147,11 +147,11 @@ First-time commits (no prior summary) skip the archive step. The intent is a pap
 
 Two layers, but **only one decision**: did the caller pass a `mechanics` payload?
 
-**Layer 1 — Item entity** (always created). Narrative description, `type` field uses Archivist's existing categories ("weapon", "wondrous item", etc.). If a mechanics journal was created, the description ends with `See mechanics: [[{Name} — Mechanics]]`.
+**Layer 1 — Item entity** (always created). Narrative description plus a `type` field. `type` is a free-form string on the Item entity (POST/PATCH accept it; GET returns it). The API docs give exactly one example value — `"weapon"` — described as *"Item type (weapon, armor, etc)"*. The vocabulary is not enumerated and we don't know whether Archivist's UI treats specific values specially, so `register_item` passes through whatever the caller provides without validation. If a mechanics journal was created, the description ends with `See mechanics: [[{Name} — Mechanics]]`.
 
-**Layer 2 — Journal Entry** in the mechanics folder (created only when `mechanics` is provided). Full statblock as plain-text markdown sent via `content`. Tagged with caller-supplied `tags` (free-form, e.g. `["weapon", "homebrew", "cursed", "attunement"]`) plus an automatic `"mechanics"` tag for filtering. Includes `Linked to [[{Name}]]` for the wikilink back.
+**Layer 2 — Journal Entry** in the mechanics folder (created only when `mechanics` is provided). Full statblock as plain-text markdown sent via `content`. Tagged with caller-supplied `tags` (free-form, e.g. `["weapon", "homebrew", "cursed", "attunement"]`) plus an automatic `"mechanics"` tag for filtering. Finer categorization than `Item.type` captures — "cursed", "consumable", "attunement-required", "homebrew" — lives here on journal tags, not on the Item. Includes `Linked to [[{Name}]]` for the wikilink back.
 
-**No tier enum.** Categorization comes from Archivist's existing `Item.type` and free-form journal `tags`. The branching logic in `register_item` is just `if mechanics is not None: create_journal(...)`.
+**No tier enum.** Categorization comes from Archivist's `Item.type` (coarse) and free-form journal `tags` (fine). The branching logic in `register_item` is just `if mechanics is not None: create_journal(...)`.
 
 **What we don't store:** generic SRD items players never engage with (torches, basic longswords, mundane gear). Claude/Ask-Archivist already knows the rules; storing them pollutes RAG without adding value. The user (or Claude on the user's behalf) decides item-by-item what's worth registering.
 
