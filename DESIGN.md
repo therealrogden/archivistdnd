@@ -103,6 +103,11 @@ Total surface: **10 tools**. Kept tight on purpose.
 | `prep-next-session` | Reads quests + last session + open beats, drafts GM prep notes (does not write back). |
 | `register-found-item` | Asks the user for narrative description, then asks "does this item have mechanics worth a statblock?" — if yes, prompts for the mechanics fields and calls `register_item` with them. |
 | `summarize-faction-arc(faction_id)` | Pulls a faction + linked beats/moments/characters/quests, drafts an arc summary. |
+| `character-arc(character_id)` | Same shape as faction arc, for a PC or NPC. Narrative-oriented, shareable. Uses for: retirement write-ups, recaps for late-joining players, "remind me what my character has been through." |
+| `location-gazetteer(location_id)` | Pulls a location + linked NPCs/factions/items/events. For refresher before the party returns somewhere. |
+| `npc-dossier(character_id)` | **Prep-oriented**, not narrative. Intended for GM's eyes before an imminent scene: motivations, what they know, alignments, last interaction, unresolved threads. Contrast with `character-arc` which is shareable. |
+| `loose-ends` | Scans active quests with no recent beats, raised-but-unresolved mysteries, NPCs not seen in N sessions, items found but never used. Drafts a dangling-threads report. |
+| `player-brief(asker_id)` | Thin wrapper over `ask_archivist` with `asker_id` set and `gm_permissions=false`, pre-phrased as "what does my character currently know about …". Makes permission-scoped asking discoverable for players. |
 
 ## Workflows
 
