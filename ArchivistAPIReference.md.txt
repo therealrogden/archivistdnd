@@ -1,0 +1,3505 @@
+Title: Archivist API &amp; Developer Docs | TTRPG Campaign Management &amp; RAG
+
+URL Source: https://developers.myarchivist.ai/api-reference
+
+Markdown Content:
+---
+description: Complete REST API documentation for Archivist. Explore all endpoints for campaigns, characters, sessions, beats, moments, factions, locations, items, journal entries, and journal folders with example requests and responses.
+title: Archivist API &amp; Developer Docs | TTRPG Campaign Management &amp; RAG
+image: https://developers.myarchivist.ai/og.png
+---
+
+API Reference
+
+* Health  
+   * [GET health](#GET-%5Fhealth)
+* Ask (RAG)  
+   * [POST ask](#POST-%5Fv1%5Fask)
+* Campaigns  
+   * [GET campaigns](#GET-%5Fv1%5Fcampaigns)  
+   * [GET {campaign\_id}](#GET-%5Fv1%5Fcampaigns%5Fcampaign%5Fid)  
+   * [POST campaigns](#POST-%5Fv1%5Fcampaigns)  
+   * [PATCH {campaign\_id}](#PATCH-%5Fv1%5Fcampaigns%5Fcampaign%5Fid)  
+   * [DELETE {campaign\_id}](#DELETE-%5Fv1%5Fcampaigns%5Fcampaign%5Fid)  
+   * [GET stats](#GET-%5Fv1%5Fcampaigns%5Fcampaign%5Fid%5Fstats)  
+   * [GET links](#GET-%5Fv1%5Fcampaigns%5Fcampaign%5Fid%5Flinks)  
+   * [POST links](#POST-%5Fv1%5Fcampaigns%5Fcampaign%5Fid%5Flinks)  
+   * [PATCH {link\_id}](#PATCH-%5Fv1%5Fcampaigns%5Fcampaign%5Fid%5Flinks%5Flink%5Fid)  
+   * [DELETE {link\_id}](#DELETE-%5Fv1%5Fcampaigns%5Fcampaign%5Fid%5Flinks%5Flink%5Fid)
+* Worlds  
+   * [POST worlds](#POST-%5Fv1%5Fworlds)
+* Characters  
+   * [GET characters](#GET-%5Fv1%5Fcharacters)  
+   * [GET {character\_id}](#GET-%5Fv1%5Fcharacters%5Fcharacter%5Fid)  
+   * [POST characters](#POST-%5Fv1%5Fcharacters)  
+   * [PATCH {character\_id}](#PATCH-%5Fv1%5Fcharacters%5Fcharacter%5Fid)  
+   * [DELETE {character\_id}](#DELETE-%5Fv1%5Fcharacters%5Fcharacter%5Fid)
+* Sessions  
+   * [GET sessions](#GET-%5Fv1%5Fsessions)  
+   * [GET {session\_id}](#GET-%5Fv1%5Fsessions%5Fsession%5Fid)  
+   * [GET cast-analysis](#GET-%5Fv1%5Fsessions%5Fsession%5Fid%5Fcast-analysis)  
+   * [PATCH {session\_id}](#PATCH-%5Fv1%5Fsessions%5Fsession%5Fid)
+* Beats  
+   * [GET beats](#GET-%5Fv1%5Fbeats)  
+   * [GET {beat\_id}](#GET-%5Fv1%5Fbeats%5Fbeat%5Fid)  
+   * [POST beats](#POST-%5Fv1%5Fbeats)  
+   * [PATCH {beat\_id}](#PATCH-%5Fv1%5Fbeats%5Fbeat%5Fid)  
+   * [DELETE {beat\_id}](#DELETE-%5Fv1%5Fbeats%5Fbeat%5Fid)
+* Moments  
+   * [GET moments](#GET-%5Fv1%5Fmoments)  
+   * [GET {moment\_id}](#GET-%5Fv1%5Fmoments%5Fmoment%5Fid)  
+   * [POST moments](#POST-%5Fv1%5Fmoments)  
+   * [PATCH {moment\_id}](#PATCH-%5Fv1%5Fmoments%5Fmoment%5Fid)  
+   * [DELETE {moment\_id}](#DELETE-%5Fv1%5Fmoments%5Fmoment%5Fid)
+* Factions  
+   * [GET factions](#GET-%5Fv1%5Ffactions)  
+   * [GET {faction\_id}](#GET-%5Fv1%5Ffactions%5Ffaction%5Fid)  
+   * [POST factions](#POST-%5Fv1%5Ffactions)  
+   * [PATCH {faction\_id}](#PATCH-%5Fv1%5Ffactions%5Ffaction%5Fid)  
+   * [DELETE {faction\_id}](#DELETE-%5Fv1%5Ffactions%5Ffaction%5Fid)
+* Locations  
+   * [GET locations](#GET-%5Fv1%5Flocations)  
+   * [GET {location\_id}](#GET-%5Fv1%5Flocations%5Flocation%5Fid)  
+   * [POST locations](#POST-%5Fv1%5Flocations)  
+   * [PATCH {location\_id}](#PATCH-%5Fv1%5Flocations%5Flocation%5Fid)  
+   * [DELETE {location\_id}](#DELETE-%5Fv1%5Flocations%5Flocation%5Fid)
+* Items  
+   * [GET items](#GET-%5Fv1%5Fitems)  
+   * [GET {item\_id}](#GET-%5Fv1%5Fitems%5Fitem%5Fid)  
+   * [POST items](#POST-%5Fv1%5Fitems)  
+   * [PATCH {item\_id}](#PATCH-%5Fv1%5Fitems%5Fitem%5Fid)  
+   * [DELETE {item\_id}](#DELETE-%5Fv1%5Fitems%5Fitem%5Fid)
+* Quests  
+   * [GET quests](#GET-%5Fv1%5Fquests)  
+   * [GET {quest\_id}](#GET-%5Fv1%5Fquests%5Fquest%5Fid)  
+   * [POST quests](#POST-%5Fv1%5Fquests)  
+   * [PATCH {quest\_id}](#PATCH-%5Fv1%5Fquests%5Fquest%5Fid)  
+   * [DELETE {quest\_id}](#DELETE-%5Fv1%5Fquests%5Fquest%5Fid)
+* Journal Entries  
+   * [GET journals](#GET-%5Fv1%5Fjournals)  
+   * [GET {entry\_id}](#GET-%5Fv1%5Fjournals%5Fentry%5Fid)  
+   * [POST journals](#POST-%5Fv1%5Fjournals)  
+   * [PUT journals](#PUT-%5Fv1%5Fjournals)  
+   * [DELETE journals](#DELETE-%5Fv1%5Fjournals)
+* Journal Folders  
+   * [GET journal-folders](#GET-%5Fv1%5Fjournal-folders)  
+   * [GET {folder\_id}](#GET-%5Fv1%5Fjournal-folders%5Ffolder%5Fid)  
+   * [POST journal-folders](#POST-%5Fv1%5Fjournal-folders)  
+   * [PUT journal-folders](#PUT-%5Fv1%5Fjournal-folders)  
+   * [DELETE journal-folders](#DELETE-%5Fv1%5Fjournal-folders)
+
+## Supported Methods
+
+Quick reference for HTTP methods supported by each resource.
+
+| Resource        | GET | POST | PUT | PATCH | DELETE |
+| --------------- | --- | ---- | --- | ----- | ------ |
+| Campaigns       | ✓   | ✓    | —   | ✓     | ✓      |
+| Characters      | ✓   | ✓    | —   | ✓     | ✓      |
+| Sessions        | ✓   | —    | —   | ✓     | —      |
+| Beats           | ✓   | ✓    | —   | ✓     | ✓      |
+| Moments         | ✓   | ✓    | —   | ✓     | ✓      |
+| Factions        | ✓   | ✓    | —   | ✓     | ✓      |
+| Locations       | ✓   | ✓    | —   | ✓     | ✓      |
+| Items           | ✓   | ✓    | —   | ✓     | ✓      |
+| Journal Entries | ✓   | ✓    | ✓   | —     | ✓      |
+| Journal Folders | ✓   | ✓    | ✓   | —     | ✓      |
+| Links           | ✓   | ✓    | —   | ✓     | ✓      |
+| Ask (RAG)       | —   | ✓    | —   | —     | —      |
+
+## Health
+
+GET`/health`
+
+Health check for the API service (no auth required).
+
+### Request Example
+
+```
+curl https://api.myarchivist.ai/health
+```
+
+### Responses
+
+200Service is healthy
+
+```
+{
+  "status": "healthy",
+  "service": "archivist-api",
+  "version": "1.0.0",
+  "environment": "production",
+  "port": 8000,
+  "timestamp": "2025-01-15T10:30:00.123456Z"
+}
+```
+
+## Ask (RAG)
+
+POST`/v1/ask`
+
+RAG chat endpoint for campaign questions. Supports chat history and streaming.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`campaign_id`\*— ID of your campaign
+
+`messages`\*— Chat messages: \[{ role, content }\]
+
+`stream`— Return a streaming response
+
+`gm_permissions`— When true, grant full journal access for the request (overrides asker\_id). Defaults to false.
+
+`asker_id`— Optional user ID to scope journal access; must be a player/admin/owner of the campaign. Defaults to null.
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: $API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "campaign_id": "your-campaign-id",
+    "messages": [ {"role": "user", "content": "Who is Cassius Traven?"} ],
+    "gm_permissions": false,
+    "asker_id": null
+  }' \
+  https://api.myarchivist.ai/v1/ask
+```
+
+### Responses
+
+200Successful response (non-streaming)
+
+```
+{
+  "answer": "Cassius Traven is a shadowy information broker who operates in the city's underground...",
+  "monthlyTokensRemaining": 12345,
+  "hourlyTokensRemaining": 6789
+}
+```
+
+400Bad request - missing required fields
+
+```
+{
+  "detail": "messages is required"
+}
+```
+
+401Unauthorized - invalid API key
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+403Forbidden - asker\_id lacks campaign access
+
+```
+{
+  "detail": "asker_id user does not have access to this world"
+}
+```
+
+404Not found - asker\_id user missing
+
+```
+{
+  "detail": "asker_id user not found"
+}
+```
+
+429Rate limit exceeded
+
+```
+{
+  "detail": "Monthly token limit exceeded"
+}
+```
+
+## Campaigns
+
+GET`/v1/campaigns`
+
+List your campaigns.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`page`— Page number
+
+`size`— Page size
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/campaigns?page=1&size=10"
+```
+
+### Responses
+
+200List of campaigns
+
+```
+{
+  "data": [
+    {
+      "id": "camp_abc123",
+      "title": "Shadows of Elyndor",
+      "description": "A dark fantasy campaign",
+      "system": "D&D 5e",
+      "public": false,
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "size": 20,
+  "pages": 1
+}
+```
+
+401Unauthorized - invalid API key
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+GET`/v1/campaigns/{campaign_id}`
+
+Get a specific campaign by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/campaigns/abc123
+```
+
+### Responses
+
+200Campaign details
+
+```
+{
+  "id": "camp_abc123",
+  "title": "Shadows of Elyndor",
+  "description": "A dark fantasy campaign",
+  "system": "D&D 5e",
+  "public": false,
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Campaign not found
+
+```
+{
+  "detail": "Campaign not found"
+}
+```
+
+401Unauthorized - invalid API key
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+POST`/v1/campaigns`
+
+Create a new campaign. Creation bootstraps the same baseline records as the Archivist web app: the owner is added as a player/admin, a default GM speaker is created, Character Arc defaults are seeded, and default compendium field definitions are created.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`title`\*— Campaign title
+
+`description`— Campaign description
+
+`system`— Game system (e.g. D&D 5e)
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My Epic Campaign",
+    "description": "A thrilling adventure",
+    "system": "D&D 5e"
+  }' \
+  https://api.myarchivist.ai/v1/campaigns
+```
+
+### Responses
+
+201Campaign created successfully
+
+```
+{
+  "id": "camp_new123",
+  "title": "My Epic Campaign",
+  "description": "A thrilling adventure",
+  "system": "D&D 5e",
+  "public": false,
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error - missing required field
+
+```
+{
+  "detail": "title is required"
+}
+```
+
+401Unauthorized - invalid API key
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+PATCH`/v1/campaigns/{campaign_id}`
+
+Update a campaign.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`title`— Campaign title
+
+`description`— Campaign description
+
+### Request Example
+
+```
+curl -X PATCH \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated Campaign Name"}' \
+  https://api.myarchivist.ai/v1/campaigns/abc123
+```
+
+### Responses
+
+200Campaign updated successfully
+
+```
+{
+  "id": "camp_abc123",
+  "title": "Updated Campaign Name",
+  "description": "A dark fantasy campaign",
+  "system": "D&D 5e",
+  "public": false,
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Campaign not found
+
+```
+{
+  "detail": "Campaign not found"
+}
+```
+
+401Unauthorized
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+DELETE`/v1/campaigns/{campaign_id}`
+
+Permanently delete a campaign. This action cannot be undone.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -X DELETE -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/campaigns/abc123
+```
+
+### Responses
+
+204Campaign deleted successfully
+
+```
+(no content)
+```
+
+404Campaign not found
+
+```
+{
+  "detail": "Campaign not found"
+}
+```
+
+401Unauthorized - invalid API key
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+GET`/v1/campaigns/{campaign_id}/stats`
+
+Get campaign statistics (character count, session count, etc).
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/campaigns/abc123/stats
+```
+
+### Responses
+
+200Campaign statistics
+
+```
+{
+  "campaignId": "camp_abc123",
+  "characters": 12,
+  "sessions": 24,
+  "moments": 156,
+  "beats": 48,
+  "factions": 5,
+  "locations": 18,
+  "items": 32
+}
+```
+
+404Campaign not found
+
+```
+{
+  "detail": "Campaign not found"
+}
+```
+
+GET`/v1/campaigns/{campaign_id}/links`
+
+List links between entities in a campaign. Supports filtering by source/target entities and alias.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`page`— Page number
+
+`size`— Page size
+
+`from_id`— Filter by source entity ID
+
+`from_type`— Filter by source entity type (Character, Location, etc.)
+
+`to_id`— Filter by target entity ID
+
+`to_type`— Filter by target entity type
+
+`alias`— Filter by relationship label/alias
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/campaigns/abc123/links?from_id=char_456&from_type=Character"
+```
+
+### Responses
+
+200List of entity links
+
+```
+{
+  "data": [
+    {
+      "id": "link_123",
+      "campaign_id": "camp_abc123",
+      "from_id": "char_456",
+      "from_type": "Character",
+      "to_id": "char_789",
+      "to_type": "Character",
+      "alias": "friends",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 25,
+  "page": 1,
+  "size": 20,
+  "pages": 2
+}
+```
+
+POST`/v1/campaigns/{campaign_id}/links`
+
+Create or update a link between two entities. Source and target records must both exist in the same campaign, and aliases are normalized/deduped server-side.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`from_id`\*— Source entity ID
+
+`from_type`\*— Source entity type (Character, Location, etc)
+
+`to_id`\*— Target entity ID
+
+`to_type`\*— Target entity type
+
+`alias`— Relationship label
+
+### Responses
+
+201Link created or upserted successfully
+
+```
+{
+  "id": "link_new123",
+  "campaign_id": "camp_abc123",
+  "from_id": "char_456",
+  "from_type": "Character",
+  "to_id": "loc_789",
+  "to_type": "Location",
+  "alias": "home",
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+404Source or target record was not found in this campaign
+
+```
+{
+  "detail": "Target Character not found"
+}
+```
+
+422Validation error
+
+```
+{
+  "detail": "Link source and target must belong to the same world"
+}
+```
+
+PATCH`/v1/campaigns/{campaign_id}/links/{link_id}`
+
+Update a link alias. Aliases are normalized with the same rules used during create.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`alias`— Updated relationship label
+
+### Responses
+
+200Link updated successfully
+
+```
+{
+  "id": "link_123",
+  "campaign_id": "camp_abc123",
+  "from_id": "char_456",
+  "from_type": "Character",
+  "to_id": "loc_789",
+  "to_type": "Location",
+  "alias": "updated label",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Link not found
+
+```
+{
+  "detail": "Link not found"
+}
+```
+
+422Alias validation failed
+
+```
+{
+  "detail": "Link alias cannot be empty"
+}
+```
+
+DELETE`/v1/campaigns/{campaign_id}/links/{link_id}`
+
+Delete a link.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Link deleted successfully
+
+```
+(no content)
+```
+
+404Link not found
+
+```
+{
+  "detail": "Link not found"
+}
+```
+
+## Worlds
+
+POST`/v1/worlds`
+
+Create a new world directly. This uses the same bootstrap flow as POST /v1/campaigns: owner player/admin membership, default GM speaker, Character Arc seed data, and default compendium field definitions are created automatically.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`title`\*— World title
+
+`description`— World description
+
+`system`— Game system (e.g. D&D 5e)
+
+`public`— Whether the world is publicly visible
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "The Hollow Marches",
+    "description": "Frontier ruins and old gods",
+    "system": "Shadowdark",
+    "public": false
+  }' \
+  https://api.myarchivist.ai/v1/worlds
+```
+
+### Responses
+
+201World created successfully
+
+```
+{
+  "id": "world_new123",
+  "title": "The Hollow Marches",
+  "description": "Frontier ruins and old gods",
+  "system": "Shadowdark",
+  "public": false,
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+403Campaign limit reached for the current subscription tier
+
+```
+{
+  "detail": "Campaign limit reached for tier 'free' (1 max active campaigns)"
+}
+```
+
+## Characters
+
+GET`/v1/characters`
+
+List characters filtered by campaign. The legacy \`player\_name\` field is deprecated; responses may include a nullable read-only \`player\` object sourced from Speaker.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`search`— Search by name
+
+`character_type`— PC, NPC, etc.
+
+`approved_only`— Filter approved (default true)
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/characters?campaign_id=abc123"
+```
+
+### Responses
+
+200List of characters
+
+```
+{
+  "data": [
+    {
+      "id": "char_123",
+      "campaign_id": "camp_abc123",
+      "character_name": "Thorin Ironforge",
+      "player_name": null,
+      "player": {
+        "id": "speaker_123",
+        "name": "John Smith",
+        "handle": "johnsmith",
+        "roles": ["Player"],
+        "campaign_id": "camp_abc123",
+        "created_at": "2024-01-10T08:00:00Z"
+      },
+      "description": "A brave dwarf warrior",
+      "type": "PC",
+      "approved": true,
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "size": 20,
+  "pages": 1
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+401Unauthorized
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+GET`/v1/characters/{character_id}`
+
+Get a specific character by ID. The response may include aliases, backstory, speaker linkage, and a nullable read-only \`player\` object; \`player\_name\` remains legacy.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/characters/char-123
+```
+
+### Responses
+
+200Character details
+
+```
+{
+  "id": "char_123",
+  "campaign_id": "camp_abc123",
+  "character_name": "Thorin Ironforge",
+  "character_aliases": ["Thorin", "Ironforge"],
+  "player_name": null,
+  "player": {
+    "id": "speaker_123",
+    "name": "John Smith",
+    "handle": "johnsmith",
+    "roles": ["Player"],
+    "campaign_id": "camp_abc123",
+    "created_at": "2024-01-10T08:00:00Z"
+  },
+  "description": "A brave dwarf warrior",
+  "backstory": "Raised in the halls beneath Emberpeak...",
+  "speaker_id": "speaker_123",
+  "type": "PC",
+  "approved": true,
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Character not found
+
+```
+{
+  "detail": "Character not found"
+}
+```
+
+POST`/v1/characters`
+
+Create a new character. \`player\` is response-only and is not accepted in the request body. Additive parity fields include \`character\_aliases\`/\`characterAliases\`, \`speaker\_id\`/\`speakerId\`, and \`backstory\`; legacy \`character\_alias\` and \`player\_name\` are still accepted.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`character_name`\*— Character name
+
+`campaign_id`\*— Campaign ID
+
+`character_alias`— Deprecated single alias field; merged into character\_aliases after sanitization
+
+`character_aliases`— Array of aliases (camelCase \`characterAliases\` also accepted)
+
+`player_name`— Deprecated legacy player name field
+
+`speaker_id`— Linked Speaker ID in the same campaign (camelCase \`speakerId\` also accepted)
+
+`description`— Character description
+
+`backstory`— Character backstory; wikilinks are resolved and stored separately from description links
+
+`type`— PC, NPC, etc.
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "character_name": "Thorin Ironforge",
+    "character_aliases": ["Thorin", "Ironforge"],
+    "description": "A brave dwarf warrior",
+    "backstory": "Raised in the halls beneath Emberpeak...",
+    "speaker_id": "speaker_123",
+    "type": "PC",
+    "campaign_id": "abc123"
+  }' \
+  https://api.myarchivist.ai/v1/characters
+```
+
+### Responses
+
+201Character created successfully
+
+```
+{
+  "id": "char_new456",
+  "campaign_id": "camp_abc123",
+  "character_name": "Thorin Ironforge",
+  "character_aliases": ["Thorin", "Ironforge"],
+  "player_name": null,
+  "player": null,
+  "description": "A brave dwarf warrior",
+  "backstory": "Raised in the halls beneath Emberpeak...",
+  "speaker_id": "speaker_123",
+  "type": "PC",
+  "approved": false,
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error - missing required fields or invalid character linkage
+
+```
+{
+  "detail": "speaker_id must belong to the same world"
+}
+```
+
+422Validation error - HTTP URL not allowed for image
+
+```
+{
+  "detail": "image must be an HTTPS URL"
+}
+```
+
+404Campaign not found
+
+```
+{
+  "detail": "Campaign not found"
+}
+```
+
+PATCH`/v1/characters/{character_id}`
+
+Update a character. \`player\` is response-only and is not accepted in the request body. PATCH supports the same additive parity fields as POST.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`character_name`— Character name
+
+`character_alias`— Deprecated single alias field
+
+`character_aliases`— Alias list (camelCase \`characterAliases\` also accepted)
+
+`player_name`— Deprecated legacy player name field
+
+`speaker_id`— Linked Speaker ID (camelCase \`speakerId\` also accepted)
+
+`description`— Character description
+
+`backstory`— Character backstory
+
+`type`— PC, NPC, etc.
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+200Character updated successfully
+
+```
+{
+  "id": "char_123",
+  "campaign_id": "camp_abc123",
+  "character_name": "Thorin Ironforge the Bold",
+  "character_aliases": ["Thorin", "The Bold"],
+  "player_name": null,
+  "player": {
+    "id": "speaker_123",
+    "name": "John Smith",
+    "handle": "johnsmith",
+    "roles": ["Player"],
+    "campaign_id": "camp_abc123",
+    "created_at": "2024-01-10T08:00:00Z"
+  },
+  "description": "A brave dwarf warrior with a legendary magic axe",
+  "backstory": "Raised in the halls beneath Emberpeak and sworn to the old kings...",
+  "speaker_id": "speaker_123",
+  "type": "PC",
+  "approved": true,
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+400Character validation failed
+
+```
+{
+  "detail": "Character name cannot match the linked speaker name"
+}
+```
+
+404Character not found
+
+```
+{
+  "detail": "Character not found"
+}
+```
+
+DELETE`/v1/characters/{character_id}`
+
+Delete a character.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Character deleted successfully
+
+```
+(no content)
+```
+
+404Character not found
+
+```
+{
+  "detail": "Character not found"
+}
+```
+
+## Sessions
+
+GET`/v1/sessions`
+
+List sessions in a campaign.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`session_type`— audioUpload, playByPost, discordVoice, etc.
+
+`public_only`— Show only public sessions
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/sessions?campaign_id=abc123"
+```
+
+### Responses
+
+200List of game sessions
+
+```
+{
+  "data": [
+    {
+      "id": "session_123",
+      "campaign_id": "camp_abc123",
+      "type": "audioUpload",
+      "title": "The Lost Mines of Phandelver",
+      "summary": "The party explored the ancient mines...",
+      "session_date": "2024-01-20T19:00:00Z",
+      "public": false,
+      "created_at": "2024-01-20T22:30:00Z"
+    }
+  ],
+  "total": 24,
+  "page": 1,
+  "size": 20,
+  "pages": 2
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+GET`/v1/sessions/{session_id}`
+
+Get a specific session by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`include_beats`— Include related beats
+
+`include_moments`— Include related moments
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/sessions/session-123?include_beats=true"
+```
+
+### Responses
+
+200Session details
+
+```
+{
+  "id": "session_123",
+  "campaign_id": "camp_abc123",
+  "type": "audioUpload",
+  "title": "The Lost Mines of Phandelver",
+  "summary": "The party explored the ancient mines...",
+  "session_date": "2024-01-20T19:00:00Z",
+  "public": false,
+  "created_at": "2024-01-20T22:30:00Z"
+}
+```
+
+404Session not found
+
+```
+{
+  "detail": "Session not found"
+}
+```
+
+GET`/v1/sessions/{session_id}/cast-analysis`
+
+Get stored cast analysis data for a session.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/sessions/session-123/cast-analysis"
+```
+
+### Responses
+
+200Cast analysis payload
+
+```
+{
+  "id": "cast_analysis_123",
+  "session_id": "session_123",
+  "analysis": {
+    "coreSessionMetrics": {
+      "totalLines": 1284,
+      "totalWords": 18201,
+      "avgWordsPerLine": 14.18,
+      "totalTurns": 1284,
+      "avgTurnWords": 14.18
+    },
+    "talkShare": {
+      "GM": 0.42,
+      "Player 1": 0.31,
+      "Player 2": 0.27
+    }
+  },
+  "created_at": "2025-01-12T20:30:00Z",
+  "updated_at": "2025-01-12T20:30:00Z"
+}
+```
+
+404Cast analysis not found
+
+```
+{
+  "detail": "Cast analysis not found"
+}
+```
+
+PATCH`/v1/sessions/{session_id}`
+
+Update a session (title, summary, or session\_date only).
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`title`— Session title
+
+`summary`— Session summary
+
+`session_date`— ISO datetime
+
+### Responses
+
+200Session updated successfully
+
+```
+{
+  "id": "session_123",
+  "campaign_id": "camp_abc123",
+  "type": "audioUpload",
+  "title": "Updated Session Title",
+  "summary": "Updated summary...",
+  "session_date": "2024-01-20T19:00:00Z",
+  "public": false,
+  "created_at": "2024-01-20T22:30:00Z"
+}
+```
+
+404Session not found
+
+```
+{
+  "detail": "Session not found"
+}
+```
+
+## Beats
+
+GET`/v1/beats`
+
+List beats in a campaign (ordered by index).
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`page`— Page number
+
+`size`— Page size
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/beats?campaign_id=abc123"
+```
+
+### Responses
+
+200List of beats
+
+```
+{
+  "data": [
+    {
+      "id": "beat_123",
+      "campaign_id": "camp_abc123",
+      "game_session_id": "session_456",
+      "label": "The Final Battle",
+      "type": "major",
+      "description": "The party confronts the dark lord",
+      "index": 1,
+      "parent_id": null,
+      "created_at": "2024-01-20T22:30:00Z"
+    }
+  ],
+  "total": 48,
+  "page": 1,
+  "size": 20,
+  "pages": 3
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+GET`/v1/beats/{beat_id}`
+
+Get a specific beat by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/beats/beat-123
+```
+
+### Responses
+
+200Beat details
+
+```
+{
+  "id": "beat_123",
+  "campaign_id": "camp_abc123",
+  "game_session_id": "session_456",
+  "label": "The Final Battle",
+  "type": "major",
+  "description": "The party confronts the dark lord",
+  "index": 1,
+  "parent_id": null,
+  "created_at": "2024-01-20T22:30:00Z"
+}
+```
+
+404Beat not found
+
+```
+{
+  "detail": "Beat not found"
+}
+```
+
+POST`/v1/beats`
+
+Create a new beat.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`label`\*— Beat label
+
+`type`\*— major, minor, or step
+
+`campaign_id`\*— Campaign ID
+
+`game_session_id`— Session ID
+
+`description`— Beat description
+
+`index`— Position within siblings
+
+`parent_id`— Parent beat ID (for minor/step)
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "The Final Battle",
+    "type": "major",
+    "campaign_id": "abc123",
+    "game_session_id": "session-123"
+  }' \
+  https://api.myarchivist.ai/v1/beats
+```
+
+### Responses
+
+201Beat created successfully
+
+```
+{
+  "id": "beat_new789",
+  "campaign_id": "camp_abc123",
+  "game_session_id": "session_456",
+  "label": "The Final Battle",
+  "type": "major",
+  "description": null,
+  "index": 1,
+  "parent_id": null,
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error
+
+```
+{
+  "detail": "label, type, and campaign_id are required"
+}
+```
+
+PATCH`/v1/beats/{beat_id}`
+
+Update a beat (uses JSON Merge Patch).
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/merge-patch+json
+
+### Request Body
+
+`label`— Beat label
+
+`description`— Beat description
+
+`index`— Position within siblings
+
+`parent_id`— Parent beat ID
+
+### Responses
+
+200Beat updated successfully
+
+```
+{
+  "id": "beat_123",
+  "campaign_id": "camp_abc123",
+  "game_session_id": "session_456",
+  "label": "Updated Beat Label",
+  "type": "major",
+  "description": "Updated description",
+  "index": 2,
+  "parent_id": null,
+  "created_at": "2024-01-20T22:30:00Z"
+}
+```
+
+404Beat not found
+
+```
+{
+  "detail": "Beat not found"
+}
+```
+
+DELETE`/v1/beats/{beat_id}`
+
+Delete a beat (with hierarchy rules).
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Beat deleted successfully
+
+```
+(no content)
+```
+
+404Beat not found
+
+```
+{
+  "detail": "Beat not found"
+}
+```
+
+## Moments
+
+GET`/v1/moments`
+
+List moments in a campaign or session.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`— Campaign ID
+
+`session_id`— Session ID
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/moments?campaign_id=abc123"
+```
+
+### Responses
+
+200List of moments
+
+```
+{
+  "data": [
+    {
+      "id": "moment_123",
+      "campaign_id": "camp_abc123",
+      "session_id": "session_456",
+      "label": "Epic Quote",
+      "content": "I am Thorin, son of Thrain...",
+      "created_at": "2024-01-20T22:30:00Z"
+    }
+  ],
+  "total": 156,
+  "page": 1,
+  "size": 20,
+  "pages": 8
+}
+```
+
+GET`/v1/moments/{moment_id}`
+
+Get a specific moment by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`with_links`— Preserve wikilink markup
+
+### Responses
+
+200Moment details
+
+```
+{
+  "id": "moment_123",
+  "campaign_id": "camp_abc123",
+  "session_id": "session_456",
+  "label": "Epic Quote",
+  "content": "I am Thorin, son of Thrain...",
+  "created_at": "2024-01-20T22:30:00Z"
+}
+```
+
+404Moment not found
+
+```
+{
+  "detail": "Moment not found"
+}
+```
+
+POST`/v1/moments`
+
+Create a new moment.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`label`\*— Moment label
+
+`campaign_id`\*— Campaign ID
+
+`session_id`— Session ID
+
+`content`— Moment content
+
+### Responses
+
+201Moment created successfully
+
+```
+{
+  "id": "moment_new999",
+  "campaign_id": "camp_abc123",
+  "session_id": "session_456",
+  "label": "Epic Quote",
+  "content": "I am Thorin...",
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error
+
+```
+{
+  "detail": "label and campaign_id are required"
+}
+```
+
+PATCH`/v1/moments/{moment_id}`
+
+Update a moment.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Responses
+
+200Moment updated successfully
+
+```
+{
+  "id": "moment_123",
+  "campaign_id": "camp_abc123",
+  "session_id": "session_456",
+  "label": "Updated Label",
+  "content": "Updated content...",
+  "created_at": "2024-01-20T22:30:00Z"
+}
+```
+
+404Moment not found
+
+```
+{
+  "detail": "Moment not found"
+}
+```
+
+DELETE`/v1/moments/{moment_id}`
+
+Delete a moment.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Moment deleted successfully
+
+```
+(no content)
+```
+
+404Moment not found
+
+```
+{
+  "detail": "Moment not found"
+}
+```
+
+## Factions
+
+GET`/v1/factions`
+
+List factions in a campaign.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/factions?campaign_id=abc123"
+```
+
+### Responses
+
+200List of factions
+
+```
+{
+  "data": [
+    {
+      "id": "faction_123",
+      "campaign_id": "camp_abc123",
+      "name": "The Shadow Thieves",
+      "description": "A guild of thieves operating in the shadows",
+      "type": "guild",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "size": 20,
+  "pages": 1
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+GET`/v1/factions/{faction_id}`
+
+Get a specific faction by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`with_links`— Preserve wikilink markup
+
+### Responses
+
+200Faction details
+
+```
+{
+  "id": "faction_123",
+  "campaign_id": "camp_abc123",
+  "name": "The Shadow Thieves",
+  "description": "A guild of thieves operating in the shadows",
+  "type": "guild",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Faction not found
+
+```
+{
+  "detail": "Faction not found"
+}
+```
+
+POST`/v1/factions`
+
+Create a new faction.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`name`\*— Faction name
+
+`campaign_id`\*— Campaign ID
+
+`description`— Faction description
+
+`type`— Faction type
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+201Faction created successfully
+
+```
+{
+  "id": "faction_new456",
+  "campaign_id": "camp_abc123",
+  "name": "The Iron Brotherhood",
+  "description": "A mercenary company",
+  "type": "guild",
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error
+
+```
+{
+  "detail": "name and campaign_id are required"
+}
+```
+
+PATCH`/v1/factions/{faction_id}`
+
+Update a faction.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`name`— Faction name
+
+`description`— Faction description
+
+`type`— Faction type
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+200Faction updated successfully
+
+```
+{
+  "id": "faction_123",
+  "campaign_id": "camp_abc123",
+  "name": "Updated Faction Name",
+  "description": "Updated description",
+  "type": "guild",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Faction not found
+
+```
+{
+  "detail": "Faction not found"
+}
+```
+
+DELETE`/v1/factions/{faction_id}`
+
+Delete a faction.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Faction deleted successfully
+
+```
+(no content)
+```
+
+404Faction not found
+
+```
+{
+  "detail": "Faction not found"
+}
+```
+
+## Locations
+
+GET`/v1/locations`
+
+List locations in a campaign.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/locations?campaign_id=abc123"
+```
+
+### Responses
+
+200List of locations
+
+```
+{
+  "data": [
+    {
+      "id": "loc_123",
+      "campaign_id": "camp_abc123",
+      "name": "The Prancing Pony",
+      "description": "A cozy inn in Bree",
+      "type": "tavern",
+      "parent_id": "loc_456",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 18,
+  "page": 1,
+  "size": 20,
+  "pages": 1
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+GET`/v1/locations/{location_id}`
+
+Get a specific location by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`with_links`— Preserve wikilink markup
+
+### Responses
+
+200Location details
+
+```
+{
+  "id": "loc_123",
+  "campaign_id": "camp_abc123",
+  "name": "The Prancing Pony",
+  "description": "A cozy inn in Bree",
+  "type": "tavern",
+  "parent_id": "loc_456",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Location not found
+
+```
+{
+  "detail": "Location not found"
+}
+```
+
+POST`/v1/locations`
+
+Create a new location.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`name`\*— Location name
+
+`campaign_id`\*— Campaign ID
+
+`description`— Location description
+
+`type`— Location type
+
+`parent_id`— Parent location ID
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+201Location created successfully
+
+```
+{
+  "id": "loc_new789",
+  "campaign_id": "camp_abc123",
+  "name": "Rivendell",
+  "description": "The Last Homely House",
+  "type": "city",
+  "parent_id": null,
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error
+
+```
+{
+  "detail": "name and campaign_id are required"
+}
+```
+
+PATCH`/v1/locations/{location_id}`
+
+Update a location.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`name`— Location name
+
+`description`— Location description
+
+`type`— Location type
+
+`parent_id`— Parent location ID
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+200Location updated successfully
+
+```
+{
+  "id": "loc_123",
+  "campaign_id": "camp_abc123",
+  "name": "Updated Location Name",
+  "description": "Updated description",
+  "type": "tavern",
+  "parent_id": "loc_456",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Location not found
+
+```
+{
+  "detail": "Location not found"
+}
+```
+
+DELETE`/v1/locations/{location_id}`
+
+Delete a location.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Location deleted successfully
+
+```
+(no content)
+```
+
+404Location not found
+
+```
+{
+  "detail": "Location not found"
+}
+```
+
+## Items
+
+GET`/v1/items`
+
+List items in a campaign.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`with_links`— Preserve wikilink markup
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/items?campaign_id=abc123"
+```
+
+### Responses
+
+200List of items
+
+```
+{
+  "data": [
+    {
+      "id": "item_123",
+      "campaign_id": "camp_abc123",
+      "name": "Sting",
+      "description": "An elven blade that glows blue near orcs",
+      "type": "weapon",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 32,
+  "page": 1,
+  "size": 20,
+  "pages": 2
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+GET`/v1/items/{item_id}`
+
+Get a specific item by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`with_links`— Preserve wikilink markup
+
+### Responses
+
+200Item details
+
+```
+{
+  "id": "item_123",
+  "campaign_id": "camp_abc123",
+  "name": "Sting",
+  "description": "An elven blade that glows blue near orcs",
+  "type": "weapon",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Item not found
+
+```
+{
+  "detail": "Item not found"
+}
+```
+
+POST`/v1/items`
+
+Create a new item.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`name`\*— Item name
+
+`campaign_id`\*— Campaign ID
+
+`description`— Item description
+
+`type`— Item type (weapon, armor, etc)
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+201Item created successfully
+
+```
+{
+  "id": "item_new456",
+  "campaign_id": "camp_abc123",
+  "name": "Anduril",
+  "description": "The Flame of the West",
+  "type": "weapon",
+  "created_at": "2024-01-25T16:45:00Z"
+}
+```
+
+422Validation error
+
+```
+{
+  "detail": "name and campaign_id are required"
+}
+```
+
+PATCH`/v1/items/{item_id}`
+
+Update an item.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`name`— Item name
+
+`description`— Item description
+
+`type`— Item type (weapon, armor, etc)
+
+`image`— HTTPS image URL (max 2048 chars)
+
+### Responses
+
+200Item updated successfully
+
+```
+{
+  "id": "item_123",
+  "campaign_id": "camp_abc123",
+  "name": "Updated Item Name",
+  "description": "Updated description",
+  "type": "weapon",
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+404Item not found
+
+```
+{
+  "detail": "Item not found"
+}
+```
+
+DELETE`/v1/items/{item_id}`
+
+Delete an item.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Responses
+
+204Item deleted successfully
+
+```
+(no content)
+```
+
+404Item not found
+
+```
+{
+  "detail": "Item not found"
+}
+```
+
+## Quests
+
+GET`/v1/quests`
+
+List canonical quests in a campaign. Results are paginated and include summary counts, quest status/category, and first/last session provenance when known.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID
+
+`page`— Page number
+
+`size`— Page size
+
+`search`— Search by quest name, giver, or narrative fields
+
+`status`— Filter by planned | in-progress | blocked | failed | done | n/a
+
+`quest_category`— Filter by main | side | faction | personal | n/a
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/quests?campaign_id=abc123&status=in-progress"
+```
+
+### Responses
+
+200Paginated quest summaries
+
+```
+{
+  "data": [
+    {
+      "id": "quest_123",
+      "campaign_id": "camp_abc123",
+      "order_index": 2,
+      "quest_name": "Recover the Azure Sigil",
+      "quest_giver": "Aria Voss",
+      "quest_giver_id": "char_123",
+      "quest_category": "main",
+      "status": "in-progress",
+      "next_action": "Question the ferryman at Blackwake.",
+      "resolution": null,
+      "objective_count": 3,
+      "completed_objective_count": 1,
+      "progress_entry_count": 2,
+      "related_entity_count": 3,
+      "first_session": {
+        "id": "sess_001",
+        "number": 4,
+        "title": "Ashes on the Water",
+        "session_date": "2025-02-10T02:30:00Z"
+      },
+      "last_session": {
+        "id": "sess_003",
+        "number": 6,
+        "title": "The Ferryman's Price",
+        "session_date": "2025-02-24T02:30:00Z"
+      },
+      "created_at": "2025-02-10T03:00:00Z",
+      "updated_at": "2025-02-24T04:15:00Z"
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "size": 20,
+  "pages": 1
+}
+```
+
+401Unauthorized
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Access denied to this campaign"
+}
+```
+
+GET`/v1/quests/{quest_id}`
+
+Get a fully expanded quest by ID, including objectives, progress log entries, related entity refs, and session provenance.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/quests/quest_123
+```
+
+### Responses
+
+200Quest details
+
+```
+{
+  "id": "quest_123",
+  "campaign_id": "camp_abc123",
+  "order_index": 2,
+  "quest_name": "Recover the Azure Sigil",
+  "quest_giver": "Aria Voss",
+  "quest_giver_id": "char_123",
+  "quest_category": "main",
+  "status": "in-progress",
+  "success_definition": "Return the sigil to Aria Voss.",
+  "failure_conditions": "The sigil is destroyed or delivered to House Merrow.",
+  "next_action": "Question the ferryman at Blackwake.",
+  "resolution": null,
+  "objectives": [
+    { "id": "obj_1", "text": "Reach Blackwake alive", "status": "completed", "order": 1 },
+    { "id": "obj_2", "text": "Find who bought the sigil", "status": "in-progress", "order": 2 },
+    { "id": "obj_3", "text": "Recover the sigil", "status": "pending", "order": 3 }
+  ],
+  "progress_log": [
+    "The party tracked the smugglers to Blackwake.",
+    "A ferryman claimed House Merrow paid for a sealed relic case."
+  ],
+  "progress_log_entries": [
+    {
+      "id": "prog_1",
+      "text": "The party tracked the smugglers to Blackwake.",
+      "order": 1,
+      "session_id": "sess_002",
+      "session_number": 5,
+      "session_title": "Salt and Smoke",
+      "session_date": "2025-02-17T02:30:00Z"
+    }
+  ],
+  "related_characters": ["Captain Nera", "Dovan Pike — suspect buyer"],
+  "related_factions": ["House Merrow"],
+  "related_locations": ["Blackwake Docks"],
+  "related_items": ["Azure Sigil"],
+  "related_entity_refs": [
+    {
+      "id": "qe_1",
+      "entity_type": "character",
+      "entity_id": "char_456",
+      "entity_name_snapshot": "Captain Nera",
+      "label": "Captain Nera",
+      "order": 1
+    },
+    {
+      "id": "qe_2",
+      "entity_type": "item",
+      "entity_id": "item_123",
+      "entity_name_snapshot": "Azure Sigil",
+      "label": "Azure Sigil",
+      "order": 4
+    }
+  ],
+  "first_session": {
+    "id": "sess_001",
+    "number": 4,
+    "title": "Ashes on the Water",
+    "session_date": "2025-02-10T02:30:00Z"
+  },
+  "last_session": {
+    "id": "sess_003",
+    "number": 6,
+    "title": "The Ferryman's Price",
+    "session_date": "2025-02-24T02:30:00Z"
+  },
+  "created_at": "2025-02-10T03:00:00Z",
+  "updated_at": "2025-02-24T04:15:00Z"
+}
+```
+
+404Quest not found
+
+```
+{
+  "detail": "Quest not found"
+}
+```
+
+POST`/v1/quests`
+
+Create a manual quest. \`quest\_giver\` must match an approved character or faction in the same campaign. If \`objectives\` are supplied, quest status is recomputed from objective statuses. \`related\_entity\_refs\` accepts explicit entity IDs; the convenience arrays (\`related\_characters\`, \`related\_factions\`, etc.) are also accepted.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`campaign_id`\*— Campaign ID
+
+`quest_name`\*— Quest title
+
+`quest_giver`— Must resolve to an approved character or faction in this campaign
+
+`quest_category`— main | side | faction | personal | n/a
+
+`status`— planned | in-progress | blocked | failed | done | n/a; ignored when objectives are supplied
+
+`success_definition`— How the quest succeeds
+
+`failure_conditions`— How the quest fails
+
+`next_action`— Immediate next step
+
+`resolution`— Outcome or conclusion text
+
+`objectives`— Array of strings or { text, status } objects
+
+`progress_log`— Array of progress strings
+
+`related_characters`— Convenience array of related character labels
+
+`related_factions`— Convenience array of related faction labels
+
+`related_locations`— Convenience array of related location labels
+
+`related_items`— Convenience array of related item labels
+
+`related_entity_refs`— Array of { entity\_type, entity\_id?, entity\_name\_snapshot?, label? } refs
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "campaign_id": "camp_abc123",
+    "quest_name": "Recover the Azure Sigil",
+    "quest_giver": "Aria Voss",
+    "quest_category": "main",
+    "objectives": [
+      { "text": "Find who bought the sigil", "status": "in-progress" },
+      { "text": "Recover the sigil", "status": "pending" }
+    ],
+    "progress_log": [
+      "The party tracked the smugglers to Blackwake."
+    ],
+    "related_entity_refs": [
+      { "entity_type": "item", "entity_id": "item_123", "label": "Azure Sigil" },
+      { "entity_type": "location", "entity_name_snapshot": "Blackwake Docks", "label": "Blackwake Docks" }
+    ]
+  }' \
+  https://api.myarchivist.ai/v1/quests
+```
+
+### Responses
+
+201Quest created successfully
+
+```
+{
+  "id": "quest_new456",
+  "campaign_id": "camp_abc123",
+  "order_index": 7,
+  "quest_name": "Recover the Azure Sigil",
+  "quest_giver": "Aria Voss",
+  "quest_giver_id": "char_123",
+  "quest_category": "main",
+  "status": "in-progress",
+  "success_definition": null,
+  "failure_conditions": null,
+  "next_action": null,
+  "resolution": null,
+  "objectives": [
+    { "id": "obj_new1", "text": "Find who bought the sigil", "status": "in-progress", "order": 1 },
+    { "id": "obj_new2", "text": "Recover the sigil", "status": "pending", "order": 2 }
+  ],
+  "progress_log": ["The party tracked the smugglers to Blackwake."],
+  "progress_log_entries": [
+    { "id": "prog_new1", "text": "The party tracked the smugglers to Blackwake.", "order": 1, "session_id": null, "session_number": null, "session_title": null, "session_date": null }
+  ],
+  "related_characters": [],
+  "related_factions": [],
+  "related_locations": ["Blackwake Docks"],
+  "related_items": ["Azure Sigil"],
+  "related_entity_refs": [
+    { "id": "qe_new1", "entity_type": "item", "entity_id": "item_123", "entity_name_snapshot": "Azure Sigil", "label": "Azure Sigil", "order": 1 },
+    { "id": "qe_new2", "entity_type": "location", "entity_id": null, "entity_name_snapshot": "Blackwake Docks", "label": "Blackwake Docks", "order": 2 }
+  ],
+  "first_session": null,
+  "last_session": null,
+  "created_at": "2025-03-01T05:00:00Z",
+  "updated_at": "2025-03-01T05:00:00Z"
+}
+```
+
+400Invalid quest giver or related entity reference
+
+```
+{
+  "detail": "Quest giver must match an approved character or faction in this campaign"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Write access denied to this campaign"
+}
+```
+
+PATCH`/v1/quests/{quest_id}`
+
+Partially update a quest. Omitted fields are left untouched. Supplying \`objectives\` replaces the full objective list and recomputes quest status from those objective statuses. Supplying \`related\_entity\_refs\` replaces the full related-entity set; the type-specific arrays replace only their matching type bucket.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`quest_name`— Updated quest title
+
+`quest_giver`— Updated quest giver; must still resolve to an approved character or faction
+
+`quest_category`— Updated category
+
+`status`— Updated status when objectives are omitted
+
+`success_definition`— Updated success definition
+
+`failure_conditions`— Updated failure conditions
+
+`next_action`— Updated next action
+
+`resolution`— Updated resolution
+
+`objectives`— Replacement objective list
+
+`progress_log`— Replacement progress-log list
+
+`related_characters`— Replacement related character list
+
+`related_factions`— Replacement related faction list
+
+`related_locations`— Replacement related location list
+
+`related_items`— Replacement related item list
+
+`related_entity_refs`— Replacement full related-entity ref list
+
+### Request Example
+
+```
+curl -X PATCH \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "next_action": "Break into House Merrow's archive vault.",
+    "status": "blocked",
+    "related_factions": ["House Merrow", "Blackwake Dock Union"]
+  }' \
+  https://api.myarchivist.ai/v1/quests/quest_123
+```
+
+### Responses
+
+200Quest updated successfully
+
+```
+{
+  "id": "quest_123",
+  "campaign_id": "camp_abc123",
+  "order_index": 2,
+  "quest_name": "Recover the Azure Sigil",
+  "quest_giver": "Aria Voss",
+  "quest_giver_id": "char_123",
+  "quest_category": "main",
+  "status": "blocked",
+  "success_definition": "Return the sigil to Aria Voss.",
+  "failure_conditions": "The sigil is destroyed or delivered to House Merrow.",
+  "next_action": "Break into House Merrow's archive vault.",
+  "resolution": null,
+  "objectives": [
+    { "id": "obj_1", "text": "Reach Blackwake alive", "status": "completed", "order": 1 },
+    { "id": "obj_2", "text": "Find who bought the sigil", "status": "in-progress", "order": 2 },
+    { "id": "obj_3", "text": "Recover the sigil", "status": "pending", "order": 3 }
+  ],
+  "progress_log": [
+    "The party tracked the smugglers to Blackwake.",
+    "A ferryman claimed House Merrow paid for a sealed relic case."
+  ],
+  "progress_log_entries": [
+    { "id": "prog_1", "text": "The party tracked the smugglers to Blackwake.", "order": 1, "session_id": "sess_002", "session_number": 5, "session_title": "Salt and Smoke", "session_date": "2025-02-17T02:30:00Z" }
+  ],
+  "related_characters": ["Captain Nera"],
+  "related_factions": ["House Merrow", "Blackwake Dock Union"],
+  "related_locations": ["Blackwake Docks"],
+  "related_items": ["Azure Sigil"],
+  "related_entity_refs": [
+    { "id": "qe_1", "entity_type": "character", "entity_id": "char_456", "entity_name_snapshot": "Captain Nera", "label": "Captain Nera", "order": 1 },
+    { "id": "qe_2", "entity_type": "faction", "entity_id": null, "entity_name_snapshot": "House Merrow", "label": "House Merrow", "order": 2 },
+    { "id": "qe_3", "entity_type": "faction", "entity_id": null, "entity_name_snapshot": "Blackwake Dock Union", "label": "Blackwake Dock Union", "order": 3 },
+    { "id": "qe_4", "entity_type": "location", "entity_id": null, "entity_name_snapshot": "Blackwake Docks", "label": "Blackwake Docks", "order": 4 },
+    { "id": "qe_5", "entity_type": "item", "entity_id": "item_123", "entity_name_snapshot": "Azure Sigil", "label": "Azure Sigil", "order": 5 }
+  ],
+  "first_session": {
+    "id": "sess_001",
+    "number": 4,
+    "title": "Ashes on the Water",
+    "session_date": "2025-02-10T02:30:00Z"
+  },
+  "last_session": {
+    "id": "sess_003",
+    "number": 6,
+    "title": "The Ferryman's Price",
+    "session_date": "2025-02-24T02:30:00Z"
+  },
+  "created_at": "2025-02-10T03:00:00Z",
+  "updated_at": "2025-03-02T01:15:00Z"
+}
+```
+
+400Invalid payload
+
+```
+{
+  "detail": "quest_name cannot be empty"
+}
+```
+
+404Quest not found
+
+```
+{
+  "detail": "Quest not found"
+}
+```
+
+DELETE`/v1/quests/{quest_id}`
+
+Delete a quest.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -X DELETE -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/quests/quest_123
+```
+
+### Responses
+
+204Quest deleted successfully
+
+```
+(no content)
+```
+
+404Quest not found
+
+```
+{
+  "detail": "Quest not found"
+}
+```
+
+## Journal Entries
+
+GET`/v1/journals`
+
+List journal entries in a campaign. Results are filtered to entries the caller can see: public entries, entries authored by the caller, or entries explicitly shared with the caller.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID (world\_id)
+
+`page`— Page number
+
+`size`— Page size
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/journals?campaign_id=abc123"
+```
+
+### Responses
+
+200List of journal entries (content omitted)
+
+```
+{
+  "data": [
+    {
+      "id": "journal_123",
+      "world_id": "camp_abc123",
+      "title": "World History",
+      "summary": "A high-level overview of the first age...",
+      "token_count": 3245,
+      "is_public": false,
+      "status": "draft",
+      "tags": ["history"],
+      "folder_id": "folder_789",
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-16T10:30:00Z"
+    }
+  ],
+  "total": 8
+}
+```
+
+422Missing required campaign\_id
+
+```
+{
+  "detail": "campaign_id is required"
+}
+```
+
+401Unauthorized
+
+```
+{
+  "detail": "Invalid API key"
+}
+```
+
+GET`/v1/journals/{entry_id}`
+
+Get a specific journal entry by ID including full content. Responses include the caller’s effective permission level for the entry.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/journals/journal_123
+```
+
+### Responses
+
+200Journal entry with full content
+
+```
+{
+  "id": "journal_123",
+  "world_id": "camp_abc123",
+  "title": "World History",
+  "summary": "A high-level overview of the first age...",
+  "content": "In the beginning, the gods created the world of Aetheria...",
+  "content_rich": { "root": { "type": "root", "version": 1, "children": [] } },
+  "tags": ["history"],
+  "token_count": 3245,
+  "is_public": false,
+  "status": "draft",
+  "folder_id": "folder_789",
+  "permission_level": "manage",
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-16T10:30:00Z"
+}
+```
+
+404Journal entry not found
+
+```
+{
+  "detail": "Journal entry not found"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Insufficient permissions"
+}
+```
+
+POST`/v1/journals`
+
+Create a new journal entry. \`content\_rich\` is canonical when both rich and plain content are supplied, folder IDs must belong to the same world, creator-level manage permission is granted automatically, and wikilinks are extracted/synced from the saved content. Maximum 2,000,000 characters per request. Worlds are capped at 1,000,000 journal tokens; individual entries are capped at 50,000 tokens.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`world_id`\*— Campaign ID
+
+`title`\*— Entry title
+
+`content`— Plain text content (max 2M chars)
+
+`content_rich`— Lexical editor state JSON; takes precedence over content when both are present
+
+`content_metadata`— Structured content metadata
+
+`summary`— Short summary
+
+`tags`— Array of tag strings
+
+`cover_image`— Optional journal cover image URL
+
+`is_pinned`— Pin this entry in the UI
+
+`is_public`— Publicly visible entry
+
+`status`— draft | published | archived
+
+`published_at`— Explicit published timestamp; otherwise set automatically when status becomes published
+
+`archived_at`— Explicit archived timestamp; otherwise set automatically when status becomes archived
+
+`folder_id`— Folder ID
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "world_id": "camp_abc123",
+    "title": "World History",
+    "content": "In the beginning, the gods created the world of Aetheria...",
+    "tags": ["history"],
+    "status": "draft"
+  }' \
+  https://api.myarchivist.ai/v1/journals
+```
+
+### Responses
+
+201Journal entry created successfully
+
+```
+{
+  "success": true,
+  "id": "journal_new456"
+}
+```
+
+400Token limits exceeded
+
+```
+{
+  "detail": "This journal entry exceeds the per-entry token limit"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Write access denied to this world"
+}
+```
+
+404Referenced journal folder was not found in this world
+
+```
+{
+  "detail": "Journal folder not found"
+}
+```
+
+400Content too large
+
+```
+{
+  "detail": "Content too large; max 2000000 characters"
+}
+```
+
+PUT`/v1/journals`
+
+Update an existing journal entry. \`content\_rich\` remains canonical, embeddings are regenerated when saved content changes, permissions can be added or removed, ownership can be reassigned with \`author\_id\`, and journal wikilinks are re-synced from the saved content.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`id`\*— Journal entry ID
+
+`title`— Updated title
+
+`summary`— Updated summary
+
+`content`— Updated content (triggers re-embedding)
+
+`content_rich`— Updated Lexical JSON (takes precedence over content)
+
+`content_metadata`— Updated metadata object
+
+`tags`— Updated tags
+
+`cover_image`— Updated cover image URL
+
+`is_pinned`— Updated pinned state
+
+`is_public`— Updated visibility
+
+`status`— Updated status
+
+`published_at`— Updated published timestamp
+
+`archived_at`— Updated archived timestamp
+
+`folder_id`— Updated folder
+
+`author_id`— Transfer authorship to another user with world access
+
+`permissions`— Permission mutation object: { add: \[{ user\_id, level }\], remove: \[{ user\_id }\] }
+
+### Request Example
+
+```
+curl -X PUT \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "journal_123",
+    "content": "Updated journal content with [[Cassius Traven]].",
+    "status": "published",
+    "permissions": {
+      "add": [{ "user_id": "user_456", "level": "comment" }],
+      "remove": []
+    }
+  }' \
+  https://api.myarchivist.ai/v1/journals
+```
+
+### Responses
+
+200Journal entry updated successfully
+
+```
+{
+  "success": true,
+  "id": "journal_123"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Insufficient permissions"
+}
+```
+
+404Journal entry or referenced folder/user not found
+
+```
+{
+  "detail": "Journal entry not found"
+}
+```
+
+400Validation failed
+
+```
+{
+  "detail": "Cannot remove the current owner from this journal entry."
+}
+```
+
+DELETE`/v1/journals`
+
+Delete a journal entry and its associated embeddings. Requires manage permission on the entry.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`id`\*— Journal entry ID
+
+### Request Example
+
+```
+curl -X DELETE -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/journals?id=journal_123"
+```
+
+### Responses
+
+200Journal entry deleted successfully
+
+```
+{
+  "success": true
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Insufficient permissions"
+}
+```
+
+404Journal entry not found
+
+```
+{
+  "detail": "Journal entry not found"
+}
+```
+
+## Journal Folders
+
+GET`/v1/journal-folders`
+
+List journal folders for a campaign. Ordered by path and position for tree rendering.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`campaign_id`\*— Campaign ID (world\_id)
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/journal-folders?campaign_id=abc123"
+```
+
+### Responses
+
+200List of journal folders
+
+```
+{
+  "data": [
+    {
+      "id": "folder_123",
+      "world_id": "camp_abc123",
+      "parent_id": null,
+      "name": "Lore",
+      "path": "lore",
+      "description": null,
+      "position": 0,
+      "metadata": null,
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-16T10:30:00Z"
+    }
+  ]
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Access denied to this world"
+}
+```
+
+404World not found
+
+```
+{
+  "detail": "World not found"
+}
+```
+
+GET`/v1/journal-folders/{folder_id}`
+
+Get a specific journal folder by ID.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Request Example
+
+```
+curl -H "x-api-key: YOUR_API_KEY" https://api.myarchivist.ai/v1/journal-folders/folder_123
+```
+
+### Responses
+
+200Journal folder
+
+```
+{
+  "id": "folder_123",
+  "world_id": "camp_abc123",
+  "parent_id": null,
+  "name": "Lore",
+  "path": "lore",
+  "description": null,
+  "position": 0,
+  "metadata": null,
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-16T10:30:00Z"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Access denied to this world"
+}
+```
+
+404World not found
+
+```
+{
+  "detail": "World not found"
+}
+```
+
+404Journal folder not found
+
+```
+{
+  "detail": "Journal folder not found"
+}
+```
+
+POST`/v1/journal-folders`
+
+Create a new journal folder.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`world_id`\*— Campaign ID
+
+`name`\*— Folder name
+
+`path`\*— Folder path (unique per campaign; normalized, no leading/trailing slashes)
+
+`parent_id`— Parent folder ID (must be in same campaign)
+
+`description`— Folder description
+
+`position`— Sort position within parent
+
+`metadata`— Optional metadata JSON
+
+### Request Example
+
+```
+curl -X POST \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "world_id": "camp_abc123",
+    "name": "Lore",
+    "path": "lore",
+    "position": 0
+  }' \
+  https://api.myarchivist.ai/v1/journal-folders
+```
+
+### Responses
+
+201Journal folder created successfully
+
+```
+{
+  "success": true,
+  "id": "folder_456"
+}
+```
+
+400Invalid parent folder
+
+```
+{
+  "detail": "Invalid parent folder"
+}
+```
+
+400Duplicate folder path
+
+```
+{
+  "detail": "Folder path already exists for this campaign"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Write access denied to this world"
+}
+```
+
+404World not found
+
+```
+{
+  "detail": "World not found"
+}
+```
+
+PUT`/v1/journal-folders`
+
+Update an existing journal folder.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+`Content-Type`\*— application/json
+
+### Request Body
+
+`id`\*— Journal folder ID
+
+`name`— Updated name
+
+`path`— Updated path (unique per campaign; normalized, no leading/trailing slashes)
+
+`parent_id`— Updated parent folder ID (must be in same campaign)
+
+`description`— Updated description
+
+`position`— Updated position
+
+`metadata`— Updated metadata JSON
+
+### Request Example
+
+```
+curl -X PUT \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "folder_456",
+    "name": "Lore Docs",
+    "path": "lore/docs"
+  }' \
+  https://api.myarchivist.ai/v1/journal-folders
+```
+
+### Responses
+
+200Journal folder updated successfully
+
+```
+{
+  "success": true,
+  "id": "folder_456"
+}
+```
+
+400Folder cannot be its own parent
+
+```
+{
+  "detail": "Folder cannot be its own parent"
+}
+```
+
+400Invalid parent folder
+
+```
+{
+  "detail": "Invalid parent folder"
+}
+```
+
+400Duplicate folder path
+
+```
+{
+  "detail": "Folder path already exists for this campaign"
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Write access denied to this world"
+}
+```
+
+404World not found
+
+```
+{
+  "detail": "World not found"
+}
+```
+
+404Journal folder not found
+
+```
+{
+  "detail": "Journal folder not found"
+}
+```
+
+DELETE`/v1/journal-folders`
+
+Delete a journal folder.
+
+### Headers
+
+`x-api-key`\*— Your API key
+
+### Query Params
+
+`id`\*— Journal folder ID
+
+### Request Example
+
+```
+curl -X DELETE -H "x-api-key: YOUR_API_KEY" "https://api.myarchivist.ai/v1/journal-folders?id=folder_456"
+```
+
+### Responses
+
+200Journal folder deleted successfully
+
+```
+{
+  "success": true
+}
+```
+
+403Forbidden
+
+```
+{
+  "detail": "Write access denied to this world"
+}
+```
+
+404World not found
+
+```
+{
+  "detail": "World not found"
+}
+```
+
+404Journal folder not found
+
+```
+{
+  "detail": "Journal folder not found"
+}
+```
+
+```json
+{"@context":"https://schema.org","@graph":[{"@type":"Organization","name":"Archivist AI","url":"https://myarchivist.ai/","logo":"https://developers.myarchivist.ai/apple-icon.png"},{"@type":"WebSite","name":"Archivist Developers","url":"https://developers.myarchivist.ai/","potentialAction":{"@type":"SearchAction","target":"https://developers.myarchivist.ai/search?q={search_term_string}","query-input":"required name=search_term_string"}},{"@type":"SoftwareApplication","name":"Archivist API","operatingSystem":"Any","applicationCategory":"DeveloperApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://developers.myarchivist.ai/api-reference","description":"REST API with streaming for TTRPG campaign management, Beats & Moments modeling, and RAG queries over campaign data."}]}
+```
