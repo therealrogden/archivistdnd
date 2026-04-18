@@ -22,14 +22,14 @@ async def sessions_resource() -> dict[str, Any]:
 
 @mcp.resource("archivist://session/{session_id}")
 async def session_resource(session_id: str) -> dict[str, Any]:
-    """Composite session view: session metadata, moments, and cast analysis.
+    """Composite session view: session metadata, beats, moments, and cast analysis.
 
+    Beats and moments are fetched via include_moments=true on the session endpoint
+    (include_beats has a known server-side bug; beats field will be null until fixed).
     Cast analysis is omitted (not an error) when the session has no audio transcript.
-    Beats are omitted: the API beats list does not support filtering by session.
     """
-    session, moments, cast = await asyncio.gather(
-        client.get(f"/v1/sessions/{session_id}"),
-        client.get("/v1/moments", session_id=session_id),
+    session, cast = await asyncio.gather(
+        client.get(f"/v1/sessions/{session_id}", include_moments=True),
         client.get(f"/v1/sessions/{session_id}/cast-analysis"),
         return_exceptions=True,
     )
@@ -37,7 +37,6 @@ async def session_resource(session_id: str) -> dict[str, Any]:
         raise session
     return {
         **session,
-        "moments": moments if not isinstance(moments, Exception) else [],
         "cast_analysis": None if isinstance(cast, Exception) else cast,
     }
 
