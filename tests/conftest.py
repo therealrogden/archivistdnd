@@ -57,9 +57,10 @@ def _register_default_api_routes(httpx_mock: Any) -> None:
 
     add("GET", f"/v1/campaigns/{cid}", json=load_fixture("campaign", "detail"))
     add("GET", f"/v1/campaigns/{cid}/stats", json=load_fixture("campaign", "stats"))
-    add("GET", f"/v1/campaigns/{cid}/links", json=load_fixture("campaign", "links"))
+    q_links = urlencode({"page": 1, "page_size": 50})
+    add("GET", f"/v1/campaigns/{cid}/links?{q_links}", json=load_fixture("campaign", "links"))
 
-    q_sessions = urlencode({"campaign_id": cid})
+    q_sessions = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/sessions?{q_sessions}", json=load_fixture("session", "list"))
 
     add("GET", f"/v1/sessions/{SESSION_ID}", json=load_fixture("session", "detail"))
@@ -69,40 +70,44 @@ def _register_default_api_routes(httpx_mock: Any) -> None:
         json=load_fixture("session", "cast_analysis"),
     )
 
-    q_beats = urlencode({"campaign_id": cid, "game_session_id": SESSION_ID})
+    q_beats = urlencode(
+        {"campaign_id": cid, "game_session_id": SESSION_ID, "page": 1, "page_size": 50}
+    )
     add("GET", f"/v1/beats?{q_beats}", json=load_fixture("session", "beats_list"))
 
-    q_moments = urlencode({"campaign_id": cid, "session_id": SESSION_ID})
+    q_moments = urlencode(
+        {"campaign_id": cid, "session_id": SESSION_ID, "page": 1, "page_size": 50}
+    )
     add("GET", f"/v1/moments?{q_moments}", json=load_fixture("session", "moments_list"))
 
     add("GET", f"/v1/beats/{BEAT_ID}", json=load_fixture("beat", "detail"))
     add("GET", f"/v1/moments/{MOMENT_ID}", json=load_fixture("moment", "detail"))
 
-    q_quests = urlencode({"campaign_id": cid})
+    q_quests = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/quests?{q_quests}", json=load_fixture("quest", "list"))
     add("GET", f"/v1/quests/{QUEST_ID}", json=load_fixture("quest", "detail"))
 
-    q_chars = urlencode({"campaign_id": cid})
+    q_chars = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/characters?{q_chars}", json=load_fixture("character", "list"))
     add("GET", f"/v1/characters/{CHARACTER_ID}", json=load_fixture("character", "detail"))
 
-    q_items = urlencode({"campaign_id": cid})
+    q_items = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/items?{q_items}", json=load_fixture("item", "list"))
     add("GET", f"/v1/items/{ITEM_ID}", json=load_fixture("item", "detail"))
 
-    q_factions = urlencode({"campaign_id": cid})
+    q_factions = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/factions?{q_factions}", json=load_fixture("faction", "list"))
     add("GET", f"/v1/factions/{FACTION_ID}", json=load_fixture("faction", "detail"))
 
-    q_locs = urlencode({"campaign_id": cid})
+    q_locs = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/locations?{q_locs}", json=load_fixture("location", "list"))
     add("GET", f"/v1/locations/{LOCATION_ID}", json=load_fixture("location", "detail"))
 
-    q_journals = urlencode({"campaign_id": cid})
+    q_journals = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/journals?{q_journals}", json=load_fixture("journal", "list"))
     add("GET", f"/v1/journals/{JOURNAL_ID}", json=load_fixture("journal", "detail"))
 
-    q_folders = urlencode({"campaign_id": cid})
+    q_folders = urlencode({"campaign_id": cid, "page": 1, "page_size": 50})
     add("GET", f"/v1/journal-folders?{q_folders}", json=load_fixture("journal_folder", "list"))
     add(
         "GET",

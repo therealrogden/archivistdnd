@@ -9,7 +9,7 @@ import hashlib
 import json
 import re
 from enum import Enum
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal, TypeAlias
 from uuid import UUID
 
 from pydantic import AfterValidator, BeforeValidator, Field, PlainSerializer
@@ -169,6 +169,20 @@ ItemTypeField = Annotated[
     PlainSerializer(_serialize_item_type, return_type=str, when_used="json"),
 ]
 
+ProjectionKind: TypeAlias = Literal[
+    "campaign_link",
+    "session",
+    "quest",
+    "character",
+    "item",
+    "faction",
+    "location",
+    "beat",
+    "moment",
+    "journal",
+    "journal_folder",
+]
+
 __all__ = [
     "AliasStr",
     "ContentStr",
@@ -182,4 +196,5 @@ __all__ = [
     "canonical_json",
     "mechanics_signature",
     "parse_item_type",
+    "ProjectionKind",
 ]

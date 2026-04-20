@@ -3,7 +3,13 @@
     {
       "id": "44444444-4444-4444-4444-444444444444",
       "name": "Scrubbed Quest",
-      "status": "active"
+      "status": "active",
+      "objectives": [
+        {"completed": true},
+        {"completed": false}
+      ],
+      "updated_at": "2026-01-02T00:00:00Z",
+      "tags": ["main", "side"]
     }
   ],
   "page": 1,

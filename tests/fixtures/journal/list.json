@@ -3,7 +3,9 @@
     {
       "id": "99999999-9999-9999-9999-999999999999",
       "title": "Scrubbed Journal",
-      "folder_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      "folder_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "updated_at": "2026-01-03T00:00:00Z",
+      "tags": ["lore"]
     }
   ],
   "page": 1,

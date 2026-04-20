@@ -3,7 +3,8 @@
     {
       "id": "55555555-5555-5555-5555-555555555555",
       "name": "Scrubbed Character",
-      "type": "PC"
+      "type": "PC",
+      "player": {"id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"}
     }
   ],
   "page": 1,

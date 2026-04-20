@@ -26,6 +26,7 @@ dev = [
     "pytest-asyncio>=0.24",
     "pytest-httpx>=0.35",
     "freezegun>=1.5",
+    "tiktoken>=0.7",
 ]
 
 [tool.pytest.ini_options]

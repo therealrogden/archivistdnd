@@ -2,7 +2,24 @@ from typing import Any
 
 import httpx
 
+from .projections import project_list_payload, pagination_params
 from .server import client, mcp
+from .validation import ProjectionKind
+
+
+async def _get_slim_list(
+    path: str,
+    kind: ProjectionKind,
+    *,
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+    **extra_params: Any,
+) -> Any:
+    """GET a paginated list, forward pagination to Archivist, return envelope with slim ``data`` rows."""
+    params: dict[str, Any] = {**extra_params, **pagination_params(page=page, page_size=page_size, cursor=cursor)}
+    body = await client.get(path, **params)
+    return project_list_payload(body, kind)
 
 
 @mcp.resource("archivist://campaign")
@@ -17,16 +34,46 @@ async def campaign_stats_resource() -> dict[str, Any]:
     return await client.get(f"/v1/campaigns/{client.campaign_id}/stats")
 
 
-@mcp.resource("archivist://campaign/links")
-async def campaign_links_resource() -> dict[str, Any]:
-    """Entity graph links for the configured campaign (paginated)."""
-    return await client.get(f"/v1/campaigns/{client.campaign_id}/links")
+@mcp.resource("archivist://campaign/links{?page,page_size,cursor}")
+async def campaign_links_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Entity graph links for the configured campaign (paginated).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        f"/v1/campaigns/{client.campaign_id}/links",
+        "campaign_link",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+    )
 
 
-@mcp.resource("archivist://sessions")
-async def sessions_resource() -> dict[str, Any]:
-    """Paginated session list for the campaign, ordered by session_date."""
-    return await client.get("/v1/sessions", campaign_id=client.campaign_id)
+@mcp.resource("archivist://sessions{?page,page_size,cursor}")
+async def sessions_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Paginated session list for the campaign, ordered by session_date.
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    List rows use the slim session projection.
+    """
+    return await _get_slim_list(
+        "/v1/sessions",
+        "session",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://session/{session_id}")
@@ -50,21 +97,47 @@ async def session_cast_analysis_resource(session_id: str) -> dict[str, Any]:
     return {"cast_analysis": data}
 
 
-@mcp.resource("archivist://session/{session_id}/beats")
-async def session_beats_resource(session_id: str) -> dict[str, Any]:
-    """Beats for this session (paginated list from ``GET /v1/beats``)."""
-    return await client.get(
+@mcp.resource("archivist://session/{session_id}/beats{?page,page_size,cursor}")
+async def session_beats_resource(
+    session_id: str,
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Beats for this session (paginated list from ``GET /v1/beats``).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
         "/v1/beats",
+        "beat",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
         campaign_id=client.campaign_id,
         game_session_id=session_id,
     )
 
 
-@mcp.resource("archivist://session/{session_id}/moments")
-async def session_moments_resource(session_id: str) -> dict[str, Any]:
-    """Moments for this session (paginated list from ``GET /v1/moments``)."""
-    return await client.get(
+@mcp.resource("archivist://session/{session_id}/moments{?page,page_size,cursor}")
+async def session_moments_resource(
+    session_id: str,
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Moments for this session (paginated list from ``GET /v1/moments``).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
         "/v1/moments",
+        "moment",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
         campaign_id=client.campaign_id,
         session_id=session_id,
     )
@@ -82,10 +155,25 @@ async def moment_resource(moment_id: str) -> dict[str, Any]:
     return await client.get(f"/v1/moments/{moment_id}")
 
 
-@mcp.resource("archivist://quests")
-async def quests_resource() -> dict[str, Any]:
-    """All quests with objectives and progress log."""
-    return await client.get("/v1/quests", campaign_id=client.campaign_id)
+@mcp.resource("archivist://quests{?page,page_size,cursor}")
+async def quests_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Quest list for the campaign (slim rows; full detail via ``archivist://quest/{id}``).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/quests",
+        "quest",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://quest/{quest_id}")
@@ -94,10 +182,25 @@ async def quest_resource(quest_id: str) -> dict[str, Any]:
     return await client.get(f"/v1/quests/{quest_id}")
 
 
-@mcp.resource("archivist://characters")
-async def characters_resource() -> dict[str, Any]:
-    """Full cast list (PCs and NPCs) for the campaign."""
-    return await client.get("/v1/characters", campaign_id=client.campaign_id)
+@mcp.resource("archivist://characters{?page,page_size,cursor}")
+async def characters_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Cast list (PCs and NPCs) for the campaign (slim rows).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/characters",
+        "character",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://character/{character_id}")
@@ -106,16 +209,46 @@ async def character_resource(character_id: str) -> dict[str, Any]:
     return await client.get(f"/v1/characters/{character_id}")
 
 
-@mcp.resource("archivist://items")
-async def items_resource() -> dict[str, Any]:
-    """All items for the campaign (compendium list)."""
-    return await client.get("/v1/items", campaign_id=client.campaign_id)
+@mcp.resource("archivist://items{?page,page_size,cursor}")
+async def items_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Item compendium list (slim rows).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/items",
+        "item",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
-@mcp.resource("archivist://factions")
-async def factions_resource() -> dict[str, Any]:
-    """All factions for the campaign."""
-    return await client.get("/v1/factions", campaign_id=client.campaign_id)
+@mcp.resource("archivist://factions{?page,page_size,cursor}")
+async def factions_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Faction list (slim rows).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/factions",
+        "faction",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://faction/{faction_id}")
@@ -124,10 +257,25 @@ async def faction_resource(faction_id: str) -> dict[str, Any]:
     return await client.get(f"/v1/factions/{faction_id}")
 
 
-@mcp.resource("archivist://locations")
-async def locations_resource() -> dict[str, Any]:
-    """All locations for the campaign."""
-    return await client.get("/v1/locations", campaign_id=client.campaign_id)
+@mcp.resource("archivist://locations{?page,page_size,cursor}")
+async def locations_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Location list (slim rows).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/locations",
+        "location",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://location/{location_id}")
@@ -142,10 +290,25 @@ async def item_resource(item_id: str) -> dict[str, Any]:
     return await client.get(f"/v1/items/{item_id}")
 
 
-@mcp.resource("archivist://journals")
-async def journals_resource() -> dict[str, Any]:
-    """Journal entry list for the campaign (metadata; full content via ``archivist://journal/{id}``)."""
-    return await client.get("/v1/journals", campaign_id=client.campaign_id)
+@mcp.resource("archivist://journals{?page,page_size,cursor}")
+async def journals_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Journal entry list for the campaign (metadata; full content via ``archivist://journal/{id}``).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/journals",
+        "journal",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://journal/{entry_id}")
@@ -156,10 +319,25 @@ async def journal_resource(entry_id: str) -> dict[str, Any]:
     return entry
 
 
-@mcp.resource("archivist://journal-folders")
-async def journal_folders_resource() -> dict[str, Any]:
-    """Journal folder tree for the campaign."""
-    return await client.get("/v1/journal-folders", campaign_id=client.campaign_id)
+@mcp.resource("archivist://journal-folders{?page,page_size,cursor}")
+async def journal_folders_resource(
+    page: int = 1,
+    page_size: int = 50,
+    cursor: str | None = None,
+) -> dict[str, Any]:
+    """Journal folder tree for the campaign (slim rows).
+
+    Pagination is forwarded to the Archivist API: ``page`` (default 1), ``page_size`` (default 50,
+    capped at 50 server-side), and optional ``cursor`` when the upstream API supports it.
+    """
+    return await _get_slim_list(
+        "/v1/journal-folders",
+        "journal_folder",
+        page=page,
+        page_size=page_size,
+        cursor=cursor,
+        campaign_id=client.campaign_id,
+    )
 
 
 @mcp.resource("archivist://journal-folder/{folder_id}")
