@@ -1,0 +1,323 @@
+{
+  "generated_at": "2026-04-20T14:46:23.959146+00:00",
+  "campaign_id": "cmg3twddd0021jl0gesepxuit",
+  "dry_run": false,
+  "report_name": "contract_probe_20260420T144536Z",
+  "probe_cases": [
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "control_weapon",
+      "description": "Control value expected to be accepted.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-control-weapon",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon"
+      },
+      "is_control": true
+    },
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "wondrous_item_space",
+      "description": "Probe type wire format as \"wondrous item\".",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-type-space",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "wondrous item"
+      },
+      "is_control": false
+    },
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "wondrous_item_underscore",
+      "description": "Probe type wire format as \"wondrous_item\".",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-type-underscore",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "wondrous_item"
+      },
+      "is_control": false
+    },
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "wondrous_item_hyphen",
+      "description": "Probe type wire format as \"wondrous-item\".",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-type-hyphen",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "wondrous-item"
+      },
+      "is_control": false
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "control_no_mechanics",
+      "description": "Control payload without mechanics.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-control-no-mech",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon"
+      },
+      "is_control": true
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "typed_object",
+      "description": "Typed object-like mechanics payload.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-mech-typed",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon",
+        "mechanics": {
+          "damage": "1d8 slashing",
+          "properties": [
+            "versatile (1d10)"
+          ],
+          "mastery": "Sap",
+          "attunement": false,
+          "rarity": "rare",
+          "notes": "Probe typed payload."
+        }
+      },
+      "is_control": false
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "loose_object",
+      "description": "Loose object payload with nested keys.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-mech-loose",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon",
+        "mechanics": {
+          "custom_field": {
+            "nested": [
+              1,
+              2,
+              3
+            ]
+          },
+          "charges": 3,
+          "active": true,
+          "free_text": "Probe loose payload."
+        }
+      },
+      "is_control": false
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "invalid_scalar",
+      "description": "Boundary-invalid mechanics payload as scalar string.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-mech-invalid-scalar",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon",
+        "mechanics": "invalid_scalar_payload"
+      },
+      "is_control": false
+    }
+  ],
+  "probe_results": [
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "control_weapon",
+      "description": "Control value expected to be accepted.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-control-weapon",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon"
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:45:37.177000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"a4cfbe9b75a842f4b349f491212542c0\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-control-weapon\",\"tcg_image\":null,\"type\":\"weapon\",\"updated_at\":null}",
+      "created_item_id": "a4cfbe9b75a842f4b349f491212542c0",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "wondrous_item_space",
+      "description": "Probe type wire format as \"wondrous item\".",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-type-space",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "wondrous item"
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:45:45.666000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"c2a2508c889b41a29e7f5f3f6ca9cbd7\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-type-space\",\"tcg_image\":null,\"type\":\"wondrous item\",\"updated_at\":null}",
+      "created_item_id": "c2a2508c889b41a29e7f5f3f6ca9cbd7",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "wondrous_item_underscore",
+      "description": "Probe type wire format as \"wondrous_item\".",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-type-underscore",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "wondrous_item"
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:45:52.448000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"161352c3d2f146c78d631d88b05435bd\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-type-underscore\",\"tcg_image\":null,\"type\":\"wondrous_item\",\"updated_at\":null}",
+      "created_item_id": "161352c3d2f146c78d631d88b05435bd",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "item_type_wire_format",
+      "case_id": "wondrous_item_hyphen",
+      "description": "Probe type wire format as \"wondrous-item\".",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-type-hyphen",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "wondrous-item"
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:45:59.510000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"5b3d4266817f4947b91777f0326f89e5\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-type-hyphen\",\"tcg_image\":null,\"type\":\"wondrous-item\",\"updated_at\":null}",
+      "created_item_id": "5b3d4266817f4947b91777f0326f89e5",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "control_no_mechanics",
+      "description": "Control payload without mechanics.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-control-no-mech",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon"
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:46:05.250000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"6ab9ab597ae94db3a874f57e7cbb9242\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-control-no-mech\",\"tcg_image\":null,\"type\":\"weapon\",\"updated_at\":null}",
+      "created_item_id": "6ab9ab597ae94db3a874f57e7cbb9242",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "typed_object",
+      "description": "Typed object-like mechanics payload.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-mech-typed",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon",
+        "mechanics": {
+          "damage": "1d8 slashing",
+          "properties": [
+            "versatile (1d10)"
+          ],
+          "mastery": "Sap",
+          "attunement": false,
+          "rarity": "rare",
+          "notes": "Probe typed payload."
+        }
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:46:11.014000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"346e58bff63a4fd09abb066714c89cf1\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-mech-typed\",\"tcg_image\":null,\"type\":\"weapon\",\"updated_at\":null}",
+      "created_item_id": "346e58bff63a4fd09abb066714c89cf1",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "loose_object",
+      "description": "Loose object payload with nested keys.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-mech-loose",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon",
+        "mechanics": {
+          "custom_field": {
+            "nested": [
+              1,
+              2,
+              3
+            ]
+          },
+          "charges": 3,
+          "active": true,
+          "free_text": "Probe loose payload."
+        }
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:46:15.283000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"23dd28489e6d4b479dd0ecfe09f65649\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-mech-loose\",\"tcg_image\":null,\"type\":\"weapon\",\"updated_at\":null}",
+      "created_item_id": "23dd28489e6d4b479dd0ecfe09f65649",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    },
+    {
+      "probe": "mechanics_payload_shape",
+      "case_id": "invalid_scalar",
+      "description": "Boundary-invalid mechanics payload as scalar string.",
+      "payload": {
+        "campaign_id": "cmg3twddd0021jl0gesepxuit",
+        "name": "probe-step13-20260420T144536Z-mech-invalid-scalar",
+        "description": "Disposable probe entity for contract validation.",
+        "type": "weapon",
+        "mechanics": "invalid_scalar_payload"
+      },
+      "status_code": 200,
+      "accepted": true,
+      "response_excerpt": "{\"aliases\":[],\"campaign_id\":\"cmg3twddd0021jl0gesepxuit\",\"created_at\":\"2026-04-20T14:46:19.394000\",\"description\":\"Disposable probe entity for contract validation.\",\"id\":\"4707c150d3a94106997c629d0e5abb13\",\"image\":null,\"match_info\":null,\"name\":\"probe-step13-20260420T144536Z-mech-invalid-scalar\",\"tcg_image\":null,\"type\":\"weapon\",\"updated_at\":null}",
+      "created_item_id": "4707c150d3a94106997c629d0e5abb13",
+      "cleanup_attempted": true,
+      "cleanup_succeeded": true,
+      "cleanup_error": null
+    }
+  ],
+  "summaries": {
+    "item_type_wire_format": {
+      "probe": "item_type_wire_format",
+      "control_ok": true,
+      "accepted_candidates": [
+        "wondrous_item_space",
+        "wondrous_item_underscore",
+        "wondrous_item_hyphen"
+      ],
+      "status": "accepted_candidates_found"
+    },
+    "mechanics_payload_shape": {
+      "probe": "mechanics_payload_shape",
+      "control_ok": true,
+      "accepted_candidates": [
+        "typed_object",
+        "loose_object",
+        "invalid_scalar"
+      ],
+      "status": "accepted_candidates_found"
+    }
+  },
+  "suggested_validator_decision": "Accepted Item.type candidates: ['wondrous_item_space', 'wondrous_item_underscore', 'wondrous_item_hyphen'] Accepted mechanics payload cases: ['typed_object', 'loose_object', 'invalid_scalar']",
+  "mechanics_signature_examples": {
+    "typed_object": "a43b094222050d4e8f0c16286b60c38f203b1b8e9e5a6150cdfbbabb5b814b2b",
+    "loose_object": "aec07164c0e7953676bf735eba27e55c5628d23686a1ae045db5cfe0e593b9b0"
+  }
+}
