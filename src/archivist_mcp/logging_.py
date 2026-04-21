@@ -27,6 +27,20 @@ _CLIENT_REQUEST_KEYS = frozenset(
 )
 _CACHE_EVENT_KEYS = frozenset({"timestamp", "level", "event", "uri", "action", "ttl_remaining_s"})
 _USER_PAYLOAD_KEYS = frozenset({"timestamp", "level", "event", "body"})
+_COMMIT_PARTIAL_FAILURE_KEYS = frozenset(
+    {
+        "timestamp",
+        "level",
+        "event",
+        "tool",
+        "folder_id",
+        "title",
+        "journal_id",
+        "patch_status",
+        "patch_uri",
+        "correlation_id",
+    }
+)
 
 
 class _ArchivistJsonHandler(logging.Handler):
@@ -193,6 +207,39 @@ def emit_cache(
         "ttl_remaining_s": ttl_remaining_s,
     }
     _validate_exact_keys(_CACHE_EVENT_KEYS, payload)
+    record = logger.makeRecord(logger.name, level, "(archivist)", 0, "", (), None)
+    record.archivist_json = mask_sensitive(payload)
+    logger.handle(record)
+
+
+def emit_commit_partial_failure(
+    logger: logging.Logger,
+    *,
+    tool: str,
+    folder_id: str,
+    title: str,
+    journal_id: str,
+    patch_status: int | None,
+    patch_uri: str,
+    correlation_id: str,
+    level: int = logging.WARNING,
+) -> None:
+    """Log archive-then-PATCH failure (orphan archive safety net; DESIGN.md partial-failure reporting)."""
+    if not logger.isEnabledFor(level):
+        return
+    payload: dict[str, Any] = {
+        "timestamp": _utc_timestamp(),
+        "level": _level_name(level),
+        "event": "commit.partial_failure",
+        "tool": tool,
+        "folder_id": folder_id,
+        "title": title,
+        "journal_id": journal_id,
+        "patch_status": patch_status,
+        "patch_uri": mask_sensitive(patch_uri),
+        "correlation_id": correlation_id,
+    }
+    _validate_exact_keys(_COMMIT_PARTIAL_FAILURE_KEYS, payload)
     record = logger.makeRecord(logger.name, level, "(archivist)", 0, "", (), None)
     record.archivist_json = mask_sensitive(payload)
     logger.handle(record)

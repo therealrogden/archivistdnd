@@ -9,6 +9,7 @@ import pytest
 
 from archivist_mcp.logging_ import (
     emit_client_request,
+    emit_commit_partial_failure,
     emit_user_payload_for_tests,
     get_logger,
     mask_campaign_id,
@@ -89,6 +90,41 @@ def test_archivist_log_level_warning_suppresses_info(capsys: pytest.CaptureFixtu
         correlation_id="i",
     )
     assert capsys.readouterr().err.strip() == ""
+
+
+_COMMIT_PARTIAL_KEYS = frozenset(
+    {
+        "timestamp",
+        "level",
+        "event",
+        "tool",
+        "folder_id",
+        "title",
+        "journal_id",
+        "patch_status",
+        "patch_uri",
+        "correlation_id",
+    }
+)
+
+
+def test_emit_commit_partial_failure_schema(capsys: pytest.CaptureFixture[str]) -> None:
+    os.environ["ARCHIVIST_LOG_LEVEL"] = "INFO"
+    reset_logging_configuration()
+    lg = get_logger("tpartial")
+    emit_commit_partial_failure(
+        lg,
+        tool="commit_session_summary",
+        folder_id="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        title="t",
+        journal_id="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        patch_status=500,
+        patch_uri="http://x/y",
+        correlation_id="cid",
+    )
+    payload = _parse_json_lines(capsys.readouterr().err)[0]
+    assert set(payload) == _COMMIT_PARTIAL_KEYS
+    assert payload["event"] == "commit.partial_failure"
 
 
 def test_client_request_schema_exact_keys(capsys: pytest.CaptureFixture[str]) -> None:

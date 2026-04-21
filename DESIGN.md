@@ -148,7 +148,7 @@ Total surface: **10 tools**. Kept tight on purpose.
 
 | Tool | Effect |
 |---|---|
-| `ask_archivist(question, asker_id?, gm_permissions?)` | Wraps `POST /v1/ask` with `stream: true`. Default `gm_permissions=false`, `asker_id=null`. Returns `{"answer": "<markdown>", "tokens": {"monthly_tokens_remaining", "hourly_tokens_remaining", ...}}` — budgets from response headers when streaming (integers); optional JSON token fields on streamed lines override header snapshot. Emits MCP progress per decoded chunk when the host supports progress. |
+| `ask_archivist(question, asker_id?, gm_permissions?)` | Wraps `POST /v1/ask` with `stream: true`. Default `gm_permissions=false`, `asker_id=null`. Returns `{"answer": "<markdown>", "tokens": {"monthly_tokens_remaining", "hourly_tokens_remaining", ...}}` — budgets are read from `x-monthly-remaining-tokens` / `x-hourly-remaining-tokens` on the streaming HTTP response as soon as the stream starts (integers); optional JSON token fields on streamed lines override those header values. Emits MCP progress per decoded text chunk when the client sends a `progressToken` on `tools/call` (otherwise `report_progress` is a no-op). |
 | `draft_session_summary(session_id, style?, length?, include_cast_analysis=False)` | Internally fetches session + beats + moments (and cast-analysis when `include_cast_analysis=True`), returns a draft summary. **Does not write.** Cast analysis is silently skipped on 404 (e.g., play-by-post sessions). |
 | `commit_session_summary(session_id, summary, title?)` | `PATCH /v1/sessions/{id}`. If a prior non-empty summary exists, archives it to `Summary History/` first (see Versioning). Returns prior summary verbatim in the response. |
 | `draft_campaign_summary(guidance?)` | Aggregates session summaries + quests + key entities, drafts a new campaign description or long-form overview. |
@@ -215,7 +215,7 @@ Before a commit overwrites an existing non-empty summary:
 
 First-time commits (no prior summary) skip the archive step. The intent is a paper trail of *edits*, not a duplicate of every summary ever written.
 
-**Partial-failure reporting.** If step 2 succeeds but step 3 fails, the commit tool returns an error whose payload includes the archived entry's `folder_id`, `title`, and `journal_id`, so the caller can delete or reconcile it manually in the Archivist web app. The failure is also logged as a distinct `orphan_archive` event with the same fields, making the orphan discoverable from server logs without needing the original tool response. No automated reconciliation is attempted — the archived copy exists as a safety net, and Archivist's UI already has the affordances to clean it up.
+**Partial-failure reporting.** If step 2 succeeds but step 3 fails, the commit tool returns an error whose payload includes the archived entry's `folder_id`, `title`, and `journal_id`, so the caller can delete or reconcile it manually in the Archivist web app. The failure is also logged as a structured `commit.partial_failure` event (same fields; legacy name in older notes: `orphan_archive`), making the orphan discoverable from server logs without needing the original tool response. No automated reconciliation is attempted — the archived copy exists as a safety net, and Archivist's UI already has the affordances to clean it up.
 
 ### Compendium (hybrid item tracking)
 
@@ -332,6 +332,7 @@ Events logged:
 - `cache` — hit / miss / invalidate, URI, ttl_remaining_s.
 - `tool_invocation` — name, duration_ms, outcome (`ok` / `error`), input sizes, correlation_id.
 - `resource_read` — URI, duration_ms, outcome.
+- `commit.partial_failure` — tool name plus orphan archive fields (`folder_id`, `title`, `journal_id`) and the failed primary write's status / URI / correlation id (archive succeeded, PATCH/PUT failed).
 - `error` — correlation_id, phase, exception class, message, response body (truncated).
 
 API keys never appear in logs. Campaign IDs are rendered as the last 4 characters of the UUID.
@@ -501,12 +502,17 @@ archivistdnd/
 │       ├── projections.py          # slim-list shaping per entity
 │       ├── validation.py           # Pydantic field caps, UUID checks
 │       ├── logging_.py             # structured JSON stderr logger
+│       ├── summary_text.py         # summary equality-guard normalization
+│       ├── journal_folders.py      # resolve/create nested journal folder paths
+│       ├── api_lists.py            # paginated list helpers for tools
+│       ├── errors.py               # CommitPartialFailureError (archive ok, primary write failed)
 │       ├── resources.py            # @mcp.resource definitions
 │       ├── tools/
 │       │   ├── ask.py              # ask_archivist with progress-notification streaming
-│       │   ├── summaries.py        # draft_/commit_ pairs, archive-first commits
-│       │   ├── compendium.py       # register_item, promote_item_to_homebrew
-│       │   ├── journals.py
+│       │   ├── session_summary.py  # draft_session_summary / commit_session_summary
+│       │   ├── campaign_summary.py # draft_campaign_summary / commit_campaign_summary
+│       │   ├── items.py            # register_item, promote_item_to_homebrew
+│       │   ├── journals.py         # upsert_journal_entry
 │       │   ├── links.py            # link_entities
 │       │   └── search.py           # search_entities (lexical + typed filters)
 │       ├── prompts.py              # @mcp.prompt definitions
@@ -515,15 +521,21 @@ archivistdnd/
 │       └── models.py               # Pydantic mirrors of Archivist schemas
 └── tests/
     ├── conftest.py                 # pytest-httpx fixture wiring
-    ├── unit/
-    │   ├── test_client.py
-    │   ├── test_cache.py
-    │   ├── test_projections.py
-    │   ├── test_validation.py
-    │   ├── test_resources.py
-    │   ├── test_summaries.py
-    │   ├── test_compendium.py
-    │   └── test_search.py
+    ├── test_ask_archivist.py
+    ├── test_cache.py
+    ├── test_campaign_summary.py
+    ├── test_concurrency.py
+    ├── test_items.py
+    ├── test_journals.py
+    ├── test_links.py
+    ├── test_logging.py
+    ├── test_projections.py
+    ├── test_resources.py
+    ├── test_retry.py
+    ├── test_search_entities.py
+    ├── test_session_summary.py
+    ├── test_summary_text.py
+    ├── test_validation.py
     └── fixtures/                   # scrubbed API responses (safe to commit)
 ```
 
@@ -644,17 +656,17 @@ Every step lists its own `Tests:` acceptance gate. A step is not "done" until th
    - **Tests:** every emitted log line parses as JSON; API key is masked in every event (including errors); campaign ID is masked; `ARCHIVIST_LOG_LEVEL` is respected; event schema matches the Observability section's shape.
 9. **✓** `search_entities(query, types?, filters?)` tool — lexical search with typed filters, slim-shape results. The discovery surface; required before heavy workflow tools that would otherwise enumerate lists.
    - **Tests:** `types` filter narrows results to the requested kinds; filter combinations AND correctly; empty-result path returns `[]`, not an error; invalid filter is rejected with a clear validation error; results are slim-shape (verified against `project_slim` output).
-10. **✓** `ask_archivist` tool with MCP progress-notification streaming when the client supplies a progress token. Return value includes assembled `answer` (chunked `text/plain` body) and `tokens` with snake_case budget keys from response headers; JSON-shaped stream lines can override token fields.
+10. **~** `ask_archivist` tool with MCP progress-notification streaming when the client supplies a progress token. Return value includes assembled `answer` (chunked `text/plain` body) and `tokens` with snake_case budget keys from response headers; JSON-shaped stream lines can override token fields. **Remaining gap:** confirm against a live `/v1/ask` stream that `x-monthly-remaining-tokens` / `x-hourly-remaining-tokens` populate and that a `progressToken`-sending MCP client receives ordered progress notifications end-to-end (implementation is in-tree; flip this step to **✓** after that live check).
     - **Tests:** progress notifications emitted in order during a mocked stream; the final returned string equals the concatenation of streamed chunks; token-budget fields present under snake_case keys (header path + invalid-header skip); upstream mid-stream error surfaces as an MCP tool error with a correlation ID; client cancellation is honored (no further chunks after cancel).
-11. **◯** `draft_session_summary` + `commit_session_summary`. Archive-first commit logic (`Summary History/` upsert, then PATCH, no rollback).
+11. **✓** `draft_session_summary` + `commit_session_summary`. Archive-first commit logic (`Summary History/` upsert, then PATCH, no rollback).
     - **Tests:** `draft_*` returns the candidate with no side effects (no HTTP writes observed); `commit_*` archives first, then PATCHes; equality guard — whitespace-normalized content that matches the current summary short-circuits to a no-op (no archive, no PATCH); injected PATCH failure after successful archive produces the documented orphan-report error payload and logs the `commit.partial_failure` event; end-to-end happy path on a recorded fixture.
-12. **◯** Campaign summary tools (`draft_campaign_summary`, `commit_campaign_summary`).
+12. **✓** Campaign summary tools (`draft_campaign_summary`, `commit_campaign_summary`).
     - **Tests:** mirror step 11 — draft purity, archive-first commit, equality guard, PATCH-failure orphan reporting.
 13. **✓** `scripts/probe_contracts.py` — contract probe against a live campaign that exercises the write paths whose shapes were Open Questions: `Item.type` wire format for multi-word enum values, and the accepted shape of the `mechanics` payload in Items. Ran 2026-04-20 as `contract_probe_20260420T144536Z`; artifacts at `scripts/probe-results/contract_probe_20260420T144536Z.{json,md}`. Results recorded in the **Contract probe results** section; Open Questions 2 and 3 closed. **Validator decisions baked in:** (a) `Item.type` — send canonical `"wondrous item"` (space form) on write, accept any variant on read; (b) `mechanics` — treat as unconstrained JSON at the API boundary; `mechanics_signature` is SHA-256 over canonical JSON serialization regardless of structure. See step 5 for how these decisions flow into `validation.py`.
     - **Tests:** `--dry-run` path validates the matrix + report generation without network calls; probe artifact JSON validates against its schema; probe Markdown renders without template errors.
-14. **◯** `upsert_journal_entry`, then `register_item` / `promote_item_to_homebrew`. Auto-creates the mechanics folder on first use. **`Item.type` is sent in the canonical space form** (`"wondrous item"`, etc.) per step 13's probe decision; the mapping lives in `validation.py`. Natural-key idempotency per the *Idempotency* section: `register_item` with a `mechanics` payload dedupes on `(name, mechanics_signature)` and returns the existing item with `already_exists=true` only when both match; narrative-only registrations (no `mechanics`) always create a new item so legitimate story duplicates (e.g. two Sending Stones) remain distinct.
-    - **Tests:** `upsert_journal_entry` creates-then-updates the same key without duplication; mechanics folder is auto-created on first item registration with mechanics; `register_item` with mechanics returns the same item with `already_exists=true` when `(name, mechanics_signature)` matches; `register_item` with a different mechanics payload for the same name creates a new item; narrative-only `register_item` always creates, even with a duplicate name; `Item.type` goes out on the wire as canonical space form (verified via `httpx` mock body assertion); `promote_item_to_homebrew` moves the journal entry and updates the item type.
-15. **◯** `link_entities` tool. Dedupes on `(from_id, from_type, to_id, to_type)`.
+14. **✓** `upsert_journal_entry`, then `register_item` / `promote_item_to_homebrew`. Auto-creates the mechanics folder on first use. **`Item.type` is sent in the canonical space form** (`"wondrous item"`, etc.) per step 13's probe decision; the mapping lives in `validation.py`. Natural-key idempotency per the *Idempotency* section: `register_item` with a `mechanics` payload dedupes on `(name, mechanics_signature)` and returns the existing item with `already_exists=true` only when both match; narrative-only registrations (no `mechanics`) always create a new item so legitimate story duplicates (e.g. two Sending Stones) remain distinct.
+    - **Tests:** `upsert_journal_entry` creates-then-updates the same key without duplication; mechanics folder is auto-created on first item registration with mechanics; `register_item` with mechanics returns the same item with `already_exists=true` when `(name, mechanics_signature)` matches; `register_item` with a different mechanics payload for the same name creates a new item; narrative-only `register_item` always creates, even with a duplicate name; `Item.type` goes out on the wire as canonical space form (verified via `httpx` mock body assertion); `promote_item_to_homebrew` upserts the mechanics journal and patches the item description to add the mechanics wikilink.
+15. **✓** `link_entities` tool. Dedupes on `(from_id, from_type, to_id, to_type)`.
     - **Tests:** first call creates the link; second call with identical tuple returns `already_exists=true` and the existing link; tuples differing in any field create a new link.
 16. **◯** Prompts — all ten from the table above.
     - **Tests:** each prompt renders with a representative argument set and produces non-empty output; required arguments surface a clear error when missing; optional arguments default as documented.

@@ -22,7 +22,7 @@ from archivist_mcp.logging_ import emit_cache, get_logger, reset_logging_configu
 def test_uri_invalidation_map_keys_pinned() -> None:
     expected = frozenset(URI_INVALIDATION_MAP)
     assert set(URI_INVALIDATION_MAP) == expected
-    assert len(URI_INVALIDATION_MAP) == 34
+    assert len(URI_INVALIDATION_MAP) == 35
 
 
 def test_write_route_key_and_invalidation_prefixes() -> None:
@@ -32,6 +32,12 @@ def test_write_route_key_and_invalidation_prefixes() -> None:
     base = "http://x.test"
     p = invalidation_url_prefixes(base, "PATCH", f"/v1/items/{'a' * 8}-1111-2222-3333-444444444444")
     assert p == ("http://x.test/v1/items", "http://x.test/v1/journals", "http://x.test/v1/journal-folders")
+
+
+def test_put_journals_invalidation_prefixes() -> None:
+    base = "http://x.test"
+    p = invalidation_url_prefixes(base, "PUT", "/v1/journals")
+    assert p == ("http://x.test/v1/journals", "http://x.test/v1/journal-folders")
 
 
 def test_ttl_classifier() -> None:

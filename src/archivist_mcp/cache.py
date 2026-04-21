@@ -50,6 +50,7 @@ URI_INVALIDATION_MAP: dict[str, tuple[str, ...]] = {
     "PATCH /v1/locations/{id}": ("/v1/locations",),
     "DELETE /v1/locations/{id}": ("/v1/locations",),
     "POST /v1/journals": ("/v1/journals", "/v1/journal-folders"),
+    "PUT /v1/journals": ("/v1/journals", "/v1/journal-folders"),
     "PATCH /v1/journals/{id}": ("/v1/journals", "/v1/journal-folders"),
     "DELETE /v1/journals/{id}": ("/v1/journals", "/v1/journal-folders"),
     "POST /v1/journal-folders": ("/v1/journal-folders",),

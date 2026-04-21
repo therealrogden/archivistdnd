@@ -288,6 +288,8 @@ class ArchivistClient:
         t0 = time.perf_counter()
         if method == "POST":
             response = await self._client.post(path, json=json_body)
+        elif method == "PUT":
+            response = await self._client.put(path, json=json_body)
         elif method == "PATCH":
             response = await self._client.patch(path, json=json_body)
         elif method == "DELETE":
@@ -323,6 +325,10 @@ class ArchivistClient:
     async def patch(self, path: str, json: dict[str, Any]) -> Any:
         async with WriteLock():
             return await self._write_once("PATCH", path, json_body=json)
+
+    async def put(self, path: str, json: dict[str, Any]) -> Any:
+        async with WriteLock():
+            return await self._write_once("PUT", path, json_body=json)
 
     async def delete(self, path: str) -> None:
         async with WriteLock():

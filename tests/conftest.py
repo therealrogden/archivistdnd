@@ -139,10 +139,20 @@ async def archivist_http_mock(httpx_mock: Any) -> AsyncIterator[None]:
     srv.client = new_client
     res.client = new_client
     import archivist_mcp.tools.ask as ask_mod
+    import archivist_mcp.tools.campaign_summary as campaign_summary_mod
+    import archivist_mcp.tools.items as items_mod
+    import archivist_mcp.tools.journals as journals_mod
+    import archivist_mcp.tools.links as links_mod
     import archivist_mcp.tools.search as search_mod
+    import archivist_mcp.tools.session_summary as session_summary_mod
 
     search_mod.client = new_client
     ask_mod.client = new_client
+    session_summary_mod.client = new_client
+    campaign_summary_mod.client = new_client
+    journals_mod.client = new_client
+    items_mod.client = new_client
+    links_mod.client = new_client
 
     _register_default_api_routes(httpx_mock)
 
