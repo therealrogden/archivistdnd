@@ -16,6 +16,32 @@ from tests.conftest import load_fixture
 
 
 @pytest.mark.asyncio
+async def test_search_character_uses_character_name(httpx_mock: Any) -> None:
+    """Slim search rows: API may return ``character_name`` instead of ``name``."""
+    base = "http://archivist.test"
+    httpx_mock.add_response(
+        method="GET",
+        url=re.compile(rf"{re.escape(base)}/v1/search\?.*"),
+        json={
+            "data": [
+                {
+                    "id": "c1",
+                    "kind": "character",
+                    "character_name": "Staring Grimlock",
+                    "type": "NPC",
+                }
+            ],
+            "page": 1,
+            "total": 1,
+        },
+    )
+    out = await search_entities("Grimlock")
+    assert len(out) == 1
+    assert out[0]["kind"] == "character"
+    assert out[0]["name"] == "Staring Grimlock"
+
+
+@pytest.mark.asyncio
 async def test_search_types_character_only(httpx_mock: Any) -> None:
     base = "http://archivist.test"
     httpx_mock.add_response(

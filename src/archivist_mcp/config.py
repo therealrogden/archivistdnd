@@ -15,7 +15,6 @@ class Config:
     campaign_id: str
     base_url: str
     mechanics_folder: str
-    overview_folder: str
     history_folder: str
 
 
@@ -38,6 +37,5 @@ def load_config() -> Config:
         campaign_id=campaign_id,
         base_url=os.getenv("ARCHIVIST_BASE_URL", "https://api.myarchivist.ai").rstrip("/"),
         mechanics_folder=os.getenv("ARCHIVIST_MECHANICS_FOLDER", "Items/Mechanics"),
-        overview_folder=os.getenv("ARCHIVIST_OVERVIEW_FOLDER", "Campaign Overview"),
         history_folder=os.getenv("ARCHIVIST_HISTORY_FOLDER", "Summary History"),
     )

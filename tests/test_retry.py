@@ -19,7 +19,6 @@ def _cfg() -> Config:
         campaign_id=CAMPAIGN_ID,
         base_url=os.environ["ARCHIVIST_BASE_URL"].rstrip("/"),
         mechanics_folder="Items/Mechanics",
-        overview_folder="Campaign Overview",
         history_folder="Summary History",
     )
 
